@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michal Kuderski | Data Analyst</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 font-bold text-xl tracking-tighter">
+                    MK<span class="text-blue-500">.</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="hover:text-blue-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="#about" class="hover:text-blue-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
+                        <a href="#skills" class="hover:text-blue-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Skills</a>
+                        <a href="#projects" class="hover:text-blue-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                        <a href="#contact" class="hover:text-blue-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-slate-800 border-b border-slate-700" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block hover:bg-slate-700 px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#about" class="block hover:bg-slate-700 px-3 py-2 rounded-md text-base font-medium">About</a>
+                <a href="#projects" class="block hover:bg-slate-700 px-3 py-2 rounded-md text-base font-medium">Projects</a>
+                <a href="#contact" class="block hover:bg-slate-700 px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
+        <!-- Background Decor -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl -z-10 animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl -z-10"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-blue-400 uppercase bg-blue-400/10 rounded-full border border-blue-400/20">
+                Aspiring Data Analyst
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+                Michal <span class="gradient-text">Kuderski</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-400">
+                Turning raw data into actionable insights through Statistics, Python automation, and efficient reporting.
+            </p>
+            <div class="mt-10 flex justify-center gap-4">
+                <a href="#projects" class="px-8 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2">
+                    View Portfolio <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/michal-kuderski-4b10a8230/" target="_blank" class="px-8 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold transition-all border border-slate-700 flex items-center gap-2">
+                    <i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn
+                </a>
+            </div>
+            
+            <!-- Stats -->
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-slate-800 pt-8">
+                <div>
+                    <div class="text-3xl font-bold text-white">NIU</div>
+                    <div class="text-sm text-slate-500 uppercase tracking-wide">Statistics Major</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-white">IL</div>
+                    <div class="text-sm text-slate-500 uppercase tracking-wide">Based in Romeoville</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-white">Python</div>
+                    <div class="text-sm text-slate-500 uppercase tracking-wide">Automation Expert</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-white">Power BI</div>
+                    <div class="text-sm text-slate-500 uppercase tracking-wide">Data Viz</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-slate-900">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl opacity-20 blur-lg"></div>
+                    <div class="relative bg-slate-800 rounded-2xl p-8 border border-slate-700 h-full">
+                        <i data-lucide="terminal" class="w-12 h-12 text-blue-400 mb-6"></i>
+                        <h3 class="text-2xl font-bold mb-4">The Analytical Mindset</h3>
+                        <p class="text-slate-400 leading-relaxed mb-6">
+                            My data journey started at <strong class="text-white">Northern Illinois University</strong> with a deep dive into Statistics, but I quickly realized that theory needs application to be powerful. I didn't just want to analyze data; I wanted to optimize how we handle it.
+                        </p>
+                        <p class="text-slate-400 leading-relaxed">
+                            Today, I specialize in eliminating manual drudgery through automation. I bridge the gap between messy raw data and clear strategic insights—using <strong class="text-white">Python</strong> to handle the heavy lifting and <strong class="text-white">Power BI</strong> to tell the story. My goal is simple: build efficient workflows that save time and reveal the truth hidden in the numbers.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                        More than just <br><span class="gradient-text">Spreadsheets.</span>
+                    </h2>
+                    <p class="text-lg text-slate-400 mb-8">
+                        I approach every dataset with a statistician's rigor and a developer's toolkit. My professional upbringing is defined by a curiosity for how systems work and a drive to improve them.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center mt-1 mr-3">
+                                <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
+                            </div>
+                            <span class="text-slate-300">Statistical Analysis & Modeling</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center mt-1 mr-3">
+                                <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
+                            </div>
+                            <span class="text-slate-300">Workflow Automation (Python/Excel)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center mt-1 mr-3">
+                                <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
+                            </div>
+                            <span class="text-slate-300">Data Visualization & Storytelling</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-slate-800/50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold">Technical Arsenal</h2>
+                <p class="mt-4 text-slate-400">Tools I use to extract value from data.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-card p-6 rounded-xl hover:bg-slate-800 transition-colors">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-4">
+                        <i data-lucide="code-2" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Languages & Libraries</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-blue-200">Python</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-blue-200">Pandas</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-blue-200">OpenPyxl</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-blue-200">SQL</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-blue-200">R</span>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-card p-6 rounded-xl hover:bg-slate-800 transition-colors">
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-4">
+                        <i data-lucide="bar-chart-3" class="w-6 h-6 text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Analysis & Viz</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-purple-200">Power BI</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-purple-200">Excel (Advanced)</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-purple-200">Jupyter Notebooks</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-purple-200">Tableau</span>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card p-6 rounded-xl hover:bg-slate-800 transition-colors">
+                    <div class="w-12 h-12 bg-indigo-500/10 rounded-lg flex items-center justify-center mb-4">
+                        <i data-lucide="brain-circuit" class="w-6 h-6 text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Core Competencies</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-indigo-200">Statistical Modeling</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-indigo-200">Data Cleaning</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-indigo-200">Process Automation</span>
+                        <span class="px-3 py-1 bg-slate-700 rounded-full text-xs font-medium text-indigo-200">Research</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-slate-900">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold">Featured Work</h2>
+                    <p class="mt-4 text-slate-400">Real-world applications of my skills.</p>
+                </div>
+                <a href="https://github.com/MichalKuderski" target="_blank" class="text-blue-400 hover:text-blue-300 flex items-center gap-2">
+                    View GitHub <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Project 1: GitHub Automation -->
+                <div class="group relative bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-blue-500 transition-all duration-300">
+                    <div class="h-48 bg-slate-700 flex items-center justify-center relative overflow-hidden">
+                        <!-- Abstract Representation of Excel/Python -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-green-900/40 to-slate-900"></div>
+                        <i data-lucide="file-spreadsheet" class="w-16 h-16 text-green-400 relative z-10"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Excel Workflow Automation</h3>
+                        <p class="text-slate-400 text-sm mb-4">
+                            Automated data-cleaning and reporting workflow using Python. Leveraged Pandas and OpenPyxl to replace manual Excel drudgery with efficient scripts.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="text-xs font-mono bg-slate-900 text-slate-300 px-2 py-1 rounded">Python</span>
+                            <span class="text-xs font-mono bg-slate-900 text-slate-300 px-2 py-1 rounded">Pandas</span>
+                            <span class="text-xs font-mono bg-slate-900 text-slate-300 px-2 py-1 rounded">OpenPyxl</span>
+                        </div>
+                        <a href="https://github.com/MichalKuderski/Digital-Workflow-Improvement-Automation" target="_blank" class="inline-flex items-center text-sm font-medium text-blue-400 hover:text-blue-300">
+                            View Repository <i data-lucide="external-link" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2: Kaggle Dataset -->
+                <div class="group relative bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-blue-500 transition-all duration-300">
+                    <div class="h-48 bg-slate-700 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/40 to-slate-900"></div>
+                        <i data-lucide="database" class="w-16 h-16 text-blue-400 relative z-10"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Student Performance Analysis</h3>
+                        <p class="text-slate-400 text-sm mb-4">
+                            Kaggle dataset contribution and analysis. Investigated how various student traits correlate with academic performance metrics.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="text-xs font-mono bg-slate-900 text-slate-300 px-2 py-1 rounded">Data Analysis</span>
+                            <span class="text-xs font-mono bg-slate-900 text-slate-300 px-2 py-1 rounded">Statistics</span>
+                            <span class="text-xs font-mono bg-slate-900 text-slate-300 px-2 py-1 rounded">Kaggle</span>
+                        </div>
+                        <a href="https://www.kaggle.com/michalkuderski" target="_blank" class="inline-flex items-center text-sm font-medium text-blue-400 hover:text-blue-300">
+                            View on Kaggle <i data-lucide="external-link" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3: DataCamp -->
+                <div class="group relative bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-blue-500 transition-all duration-300">
+                    <div class="h-48 bg-slate-700 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-slate-900"></div>
+                        <i data-lucide="award" class="w-16 h-16 text-purple-400 relative z-10"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">DataCamp Portfolio</h3>
+                        <p class="text-slate-400 text-sm mb-4">
+                            Continuous professional development. Completed certifications and courses covering R, SQL, and advanced Python data science techniques.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="text-xs font-mono bg-slate-900 text-slate-300 px-2 py-1 rounded">SQL</span>
+                            <span class="text-xs font-mono bg-slate-900 text-slate-300 px-2 py-1 rounded">R</span>
+                            <span class="text-xs font-mono bg-slate-900 text-slate-300 px-2 py-1 rounded">Continuous Learning</span>
+                        </div>
+                        <a href="https://www.datacamp.com/portfolio/z1968553?view=true" target="_blank" class="inline-flex items-center text-sm font-medium text-blue-400 hover:text-blue-300">
+                            View Portfolio <i data-lucide="external-link" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action / Contact -->
+    <section id="contact" class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-900 to-blue-900/20"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10 text-center">
+            <h2 class="text-4xl font-bold mb-6">Ready to optimize your data?</h2>
+            <p class="text-xl text-slate-400 mb-10">
+                I'm currently open to Data Analyst opportunities. Whether you need a statistical model or a Python script to save your team 10 hours a week, let's talk.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="mailto:mkuderski21@gmail.com" class="px-8 py-4 bg-white text-slate-900 rounded-lg font-bold hover:bg-blue-50 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="mail" class="w-5 h-5"></i> Contact Me
+                </a>
+                <a href="https://www.linkedin.com/in/michal-kuderski-4b10a8230/" target="_blank" class="px-8 py-4 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-500 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="linkedin" class="w-5 h-5"></i> LinkedIn
+                </a>
+            </div>
+
+            <!-- Footer Links -->
+            <div class="mt-16 pt-8 border-t border-slate-800 flex justify-center space-x-8">
+                <a href="https://github.com/MichalKuderski" class="text-slate-400 hover:text-white transition-colors">
+                    <span class="sr-only">GitHub</span>
+                    <i data-lucide="github" class="w-6 h-6"></i>
+                </a>
+                <a href="https://www.kaggle.com/michalkuderski" class="text-slate-400 hover:text-white transition-colors">
+                    <span class="sr-only">Kaggle</span>
+                    <i data-lucide="database" class="w-6 h-6"></i>
+                </a>
+                <a href="https://www.datacamp.com/portfolio/z1968553?view=true" class="text-slate-400 hover:text-white transition-colors">
+                    <span class="sr-only">DataCamp</span>
+                    <i data-lucide="award" class="w-6 h-6"></i>
+                </a>
+            </div>
+            <p class="mt-8 text-sm text-slate-500">© 2024 Michal Kuderski. All rights reserved.</p>
+        </div>
+    </section>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
