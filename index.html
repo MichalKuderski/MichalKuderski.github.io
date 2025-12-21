@@ -3,144 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michal Kuderski | Data Analyst Portfolio</title>
+    <title>Michal Kuderski | Data Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .project-card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            background: rgba(30, 41, 59, 0.8);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #818cf8;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 leading-relaxed">
+<body class="text-slate-300 antialiased selection:bg-indigo-500/30">
 
-    <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
-        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <span class="text-xl font-bold tracking-tight text-indigo-600">MK.</span>
-            <div class="space-x-6 text-sm font-medium text-slate-600">
-                <a href="#projects" class="hover:text-indigo-600 transition">Projects</a>
-                <a href="https://github.com/MichalKuderski" target="_blank" class="hover:text-indigo-600 transition">GitHub</a>
-                <a href="https://linkedin.com" target="_blank" class="hover:text-indigo-600 transition">LinkedIn</a>
+    <!-- Subtle Background Glow -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/20 blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/10 blur-[120px] rounded-full"></div>
+    </div>
+
+    <!-- Minimalist Navigation -->
+    <nav class="sticky top-0 z-50 bg-[#0f172a]/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+            <span class="text-lg font-bold tracking-widest text-white">MK<span class="text-indigo-500">.</span></span>
+            <div class="hidden md:flex space-x-10 text-xs font-semibold uppercase tracking-widest">
+                <a href="#projects" class="nav-link hover:text-white transition">Projects</a>
+                <a href="https://github.com/MichalKuderski" target="_blank" class="nav-link hover:text-white transition">GitHub</a>
+                <a href="https://linkedin.com" target="_blank" class="nav-link hover:text-white transition">LinkedIn</a>
             </div>
+            <a href="mailto:mkuderski21@gmail.com" class="text-xs font-bold px-5 py-2 border border-indigo-500/30 rounded-full hover:bg-indigo-500/10 transition">Email Me</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="max-w-5xl mx-auto px-6 py-20 text-center">
-        <h1 class="text-5xl md:text-6xl font-extrabold text-slate-900 mb-6 tracking-tight">
-            Michal Kuderski
-        </h1>
-        <p class="text-xl text-slate-600 max-w-2xl mx-auto mb-10">
-            Aspiring Data Analyst & Statistics Student at Northern Illinois University. 
-            Turning complex datasets into actionable business intelligence using <span class="text-indigo-600 font-semibold">SQL, R, and Python</span>.
-        </p>
-        <div class="flex flex-wrap justify-center gap-4">
-            <a href="mailto:mkuderski21@gmail.com" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
-                Contact Me
-            </a>
-            <a href="#projects" class="bg-white border border-slate-200 text-slate-700 px-8 py-3 rounded-full font-semibold hover:bg-slate-50 transition">
-                View Work
-            </a>
+    <!-- Refined Hero -->
+    <header class="max-w-6xl mx-auto px-6 pt-24 pb-32">
+        <div class="max-w-3xl">
+            <h2 class="text-indigo-400 font-bold tracking-[0.2em] text-xs uppercase mb-4">Aspiring Data Analyst</h2>
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight leading-tight">
+                Turning data into <span class="gradient-text">competitive edge.</span>
+            </h1>
+            <p class="text-lg text-slate-400 leading-relaxed mb-10 max-w-2xl">
+                Statistics student at NIU focused on high-stakes analysis. Specializing in 
+                <span class="text-slate-200">predictive modeling</span> and <span class="text-slate-200">automated reporting</span> using SQL, R, and Python.
+            </p>
+            <div class="flex items-center gap-6">
+                <a href="#projects" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-xl font-bold transition shadow-2xl shadow-indigo-900/20">
+                    Explore Projects
+                </a>
+                <div class="flex gap-4 text-slate-500">
+                    <a href="https://github.com/MichalKuderski" target="_blank" class="hover:text-white transition"><i class="fab fa-github text-xl"></i></a>
+                    <a href="#" class="hover:text-white transition"><i class="fab fa-linkedin text-xl"></i></a>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Projects Section -->
-    <main id="projects" class="max-w-5xl mx-auto px-6 pb-24">
-        <div class="flex items-center justify-between mb-12">
-            <h2 class="text-3xl font-bold text-slate-900">Featured Projects</h2>
-            <div class="h-1 w-20 bg-indigo-600 rounded"></div>
+    <!-- Bento Grid Projects Section -->
+    <main id="projects" class="max-w-6xl mx-auto px-6 pb-32">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
+            <div>
+                <h2 class="text-3xl font-bold text-white mb-2">Featured Work</h2>
+                <p class="text-slate-500">A collection of end-to-end analytical solutions.</p>
+            </div>
+            <div class="h-[1px] flex-grow mx-8 bg-white/5 hidden md:block"></div>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-8">
+        <div class="grid md:grid-cols-12 gap-6">
             
-            <!-- Project 1: Quantium -->
-            <div class="project-card bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-xl">
-                <div class="flex items-center gap-3 mb-4">
-                    <i class="fas fa-shopping-cart text-indigo-500 text-xl"></i>
-                    <h3 class="text-xl font-bold text-slate-800">Quantium Retail Strategy</h3>
+            <!-- Project 1: Quantium (Large Bento) -->
+            <div class="md:col-span-7 glass-card rounded-3xl p-8 md:p-10">
+                <div class="flex justify-between items-start mb-12">
+                    <div class="p-3 bg-indigo-500/10 rounded-2xl text-indigo-400">
+                        <i class="fas fa-shopping-cart text-2xl"></i>
+                    </div>
+                    <span class="text-[10px] font-bold tracking-widest uppercase py-1 px-3 bg-white/5 rounded-full">Retail Analysis</span>
                 </div>
-                <p class="text-slate-600 mb-6 text-sm">
-                    Analyzed 50k+ transactions to identify benchmark stores. Performed uplift testing to measure a new layout's impact on revenue.
+                <h3 class="text-2xl font-bold text-white mb-4">Quantium Retail Strategy</h3>
+                <p class="text-slate-400 mb-8 leading-relaxed">
+                    Analyzing 50k+ transactions to drive commercial growth. Utilizing uplift modeling and significance testing to validate store layout trials and customer spending patterns.
                 </p>
-                <div class="flex flex-wrap gap-2 mb-8">
-                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-md">R</span>
-                    <span class="px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-md">Uplift Testing</span>
-                    <span class="px-3 py-1 bg-slate-50 text-slate-600 text-xs font-bold rounded-md">Commercial Insights</span>
+                <div class="flex flex-wrap gap-2 mb-10">
+                    <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">R Language</span>
+                    <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Statistical Significance</span>
+                    <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">A/B Testing</span>
                 </div>
-                <a href="https://github.com/MichalKuderski/Quantium-Retail-Data-Analysis" target="_blank" class="inline-flex items-center text-indigo-600 font-bold hover:gap-2 transition-all">
-                    View Repository <i class="fas fa-arrow-right ml-2"></i>
+                <a href="https://github.com/MichalKuderski/Quantium-Retail-Data-Analysis" target="_blank" class="group inline-flex items-center text-sm font-bold text-white">
+                    View Project <i class="fas fa-arrow-right ml-3 group-hover:translate-x-2 transition-transform"></i>
                 </a>
             </div>
 
-            <!-- Project 2: Corn Yield -->
-            <div class="project-card bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-xl">
-                <div class="flex items-center gap-3 mb-4">
-                    <i class="fas fa-seedling text-green-500 text-xl"></i>
-                    <h3 class="text-xl font-bold text-slate-800">ANOVA Corn Yield Simulation</h3>
+            <!-- Project 2: Corn Yield (Small Bento) -->
+            <div class="md:col-span-5 glass-card rounded-3xl p-8 md:p-10">
+                <div class="flex justify-between items-start mb-12">
+                    <div class="p-3 bg-green-500/10 rounded-2xl text-green-400">
+                        <i class="fas fa-seedling text-2xl"></i>
+                    </div>
                 </div>
-                <p class="text-slate-600 mb-6 text-sm">
-                    Designed statistical simulations to evaluate environmental factors. Applied One-way and Two-way ANOVA to quantify production variance.
+                <h3 class="text-2xl font-bold text-white mb-4">Corn Yield ANOVA</h3>
+                <p class="text-slate-400 mb-8 leading-relaxed">
+                    Simulation of agricultural datasets to quantify yield variance using One-way and Two-way ANOVA.
                 </p>
-                <div class="flex flex-wrap gap-2 mb-8">
-                    <span class="px-3 py-1 bg-yellow-50 text-yellow-600 text-xs font-bold rounded-md">Python</span>
-                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-md">R</span>
-                    <span class="px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-md">ANOVA</span>
+                <div class="flex flex-wrap gap-2 mb-10">
+                    <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Python</span>
+                    <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">R Script</span>
                 </div>
-                <a href="https://github.com/MichalKuderski/ANOVA-Corn-Yield-Simulation" target="_blank" class="inline-flex items-center text-indigo-600 font-bold hover:gap-2 transition-all">
-                    View Repository <i class="fas fa-arrow-right ml-2"></i>
+                <a href="https://github.com/MichalKuderski/ANOVA-Corn-Yield-Simulation" target="_blank" class="group inline-flex items-center text-sm font-bold text-white">
+                    Access Code <i class="fas fa-arrow-right ml-3 group-hover:translate-x-2 transition-transform"></i>
                 </a>
             </div>
 
             <!-- Project 3: Animal Classification -->
-            <div class="project-card bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-xl">
-                <div class="flex items-center gap-3 mb-4">
-                    <i class="fas fa-paw text-orange-500 text-xl"></i>
-                    <h3 class="text-xl font-bold text-slate-800">Animal Classification ML</h3>
+            <div class="md:col-span-5 glass-card rounded-3xl p-8 md:p-10">
+                <div class="flex justify-between items-start mb-12">
+                    <div class="p-3 bg-orange-500/10 rounded-2xl text-orange-400">
+                        <i class="fas fa-paw text-2xl"></i>
+                    </div>
                 </div>
-                <p class="text-slate-600 mb-6 text-sm">
-                    Built supervised machine learning models to predict animal types based on physical traits. Features hyperparameter tuning and model evaluation.
+                <h3 class="text-2xl font-bold text-white mb-4">ML Classification</h3>
+                <p class="text-slate-400 mb-8 leading-relaxed">
+                    Supervised ML project predicting animal classes based on trait features with Random Forest.
                 </p>
-                <div class="flex flex-wrap gap-2 mb-8">
-                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-md">R</span>
-                    <span class="px-3 py-1 bg-orange-50 text-orange-600 text-xs font-bold rounded-md">Random Forest</span>
-                    <span class="px-3 py-1 bg-slate-50 text-slate-600 text-xs font-bold rounded-md">Machine Learning</span>
+                <div class="flex flex-wrap gap-2 mb-10">
+                    <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">R Caret</span>
+                    <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Classification</span>
                 </div>
-                <a href="https://github.com/MichalKuderski/Animal-Classification-Machine-Learning" target="_blank" class="inline-flex items-center text-indigo-600 font-bold hover:gap-2 transition-all">
-                    View Repository <i class="fas fa-arrow-right ml-2"></i>
+                <a href="https://github.com/MichalKuderski/Animal-Classification-Machine-Learning" target="_blank" class="group inline-flex items-center text-sm font-bold text-white">
+                    Explore ML <i class="fas fa-arrow-right ml-3 group-hover:translate-x-2 transition-transform"></i>
                 </a>
             </div>
 
-            <!-- Project 4: Student Performance -->
-            <div class="project-card bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-xl">
-                <div class="flex items-center gap-3 mb-4">
-                    <i class="fas fa-user-graduate text-purple-500 text-xl"></i>
-                    <h3 class="text-xl font-bold text-slate-800">Student Performance Modeling</h3>
+            <!-- Project 4: Student Performance (Large Bento) -->
+            <div class="md:col-span-7 glass-card rounded-3xl p-8 md:p-10">
+                <div class="flex justify-between items-start mb-12">
+                    <div class="p-3 bg-purple-500/10 rounded-2xl text-purple-400">
+                        <i class="fas fa-user-graduate text-2xl"></i>
+                    </div>
                 </div>
-                <p class="text-slate-600 mb-6 text-sm">
-                    Utilized clustering and predictive modeling to identify behavioral predictors of academic success in higher education.
+                <h3 class="text-2xl font-bold text-white mb-4">Academic Success Modeling</h3>
+                <p class="text-slate-400 mb-8 leading-relaxed">
+                    Uncovering the social and behavioral variables that drive academic outcomes through K-Means clustering and predictive regression.
                 </p>
-                <div class="flex flex-wrap gap-2 mb-8">
-                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-md">R</span>
-                    <span class="px-3 py-1 bg-purple-50 text-purple-600 text-xs font-bold rounded-md">Clustering</span>
-                    <span class="px-3 py-1 bg-slate-50 text-slate-600 text-xs font-bold rounded-md">Predictive Analytics</span>
+                <div class="flex flex-wrap gap-2 mb-10">
+                    <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Predictive Modeling</span>
+                    <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">K-Means</span>
                 </div>
-                <a href="https://github.com/MichalKuderski/Student-Performance-Predictive-Modeling" target="_blank" class="inline-flex items-center text-indigo-600 font-bold hover:gap-2 transition-all">
-                    View Repository <i class="fas fa-arrow-right ml-2"></i>
+                <a href="https://github.com/MichalKuderski/Student-Performance-Predictive-Modeling" target="_blank" class="group inline-flex items-center text-sm font-bold text-white">
+                    View Findings <i class="fas fa-arrow-right ml-3 group-hover:translate-x-2 transition-transform"></i>
                 </a>
             </div>
 
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-12">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <p class="text-slate-500 text-sm mb-4">© 2025 Michal Kuderski. Built with HTML & Tailwind CSS.</p>
-            <div class="flex justify-center gap-6 text-slate-400">
-                <a href="https://github.com/MichalKuderski" class="hover:text-indigo-600"><i class="fab fa-github fa-lg"></i></a>
-                <a href="#" class="hover:text-indigo-600"><i class="fab fa-linkedin fa-lg"></i></a>
-                <a href="mailto:mkuderski21@gmail.com" class="hover:text-indigo-600"><i class="fas fa-envelope fa-lg"></i></a>
+    <!-- Clean Footer -->
+    <footer class="border-t border-white/5 py-20 bg-black/20">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
+            <div class="text-center md:text-left">
+                <span class="text-xl font-bold text-white mb-2 block">Michal Kuderski</span>
+                <p class="text-slate-500 text-sm">© 2025 Michal Kuderski. All rights reserved.</p>
+            </div>
+            <div class="flex gap-8">
+                <a href="https://github.com/MichalKuderski" target="_blank" class="text-slate-500 hover:text-white transition">GitHub</a>
+                <a href="#" target="_blank" class="text-slate-500 hover:text-white transition">LinkedIn</a>
+                <a href="mailto:mkuderski21@gmail.com" class="text-slate-500 hover:text-white transition">Email</a>
             </div>
         </div>
     </footer>
