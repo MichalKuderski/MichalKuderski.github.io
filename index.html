@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michal Kuderski | Data Portfolio</title>
+    <title>Michal Kuderski | Data &amp; Healthcare Analytics Portfolio</title>
     <meta name="description" content="Michal Kuderski — NIU Statistics student and data analyst specializing in healthcare analytics, supply chain, and SQL-driven decision-making.">
+
+    <!-- Open Graph / LinkedIn share preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://michalKuderski.github.io/">
+    <meta property="og:title" content="Michal Kuderski | Data &amp; Healthcare Analytics Portfolio">
+    <meta property="og:description" content="NIU Statistics student specializing in healthcare analytics and data-driven decision-making. Analyzed 2,460 CMS Medicare claims · SQL · R · Python · PostgreSQL.">
+    <meta property="og:image" content="https://michalKuderski.github.io/images/og-preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Michal Kuderski | Data &amp; Healthcare Analytics Portfolio">
+    <meta name="twitter:description" content="NIU Statistics student specializing in healthcare analytics and data-driven decision-making.">
+    <meta name="twitter:image" content="https://michalKuderski.github.io/images/og-preview.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -23,9 +36,66 @@
         .kpi-box { background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.07); border-radius: 1rem; padding: 1rem 1.25rem; text-align: center; }
         .industry-pill { display:inline-flex; align-items:center; gap:0.4rem; font-size:0.65rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; padding:0.35rem 0.85rem; border-radius:9999px; border:1px solid rgba(45,212,191,0.3); color:#5eead4; background:rgba(20,184,166,0.06); }
         ::-webkit-scrollbar { width:8px; } ::-webkit-scrollbar-track { background:#0f172a; } ::-webkit-scrollbar-thumb { background:#334155; border-radius:10px; }
+
+        /* Scroll progress bar */
+        #scroll-progress { position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,#818cf8,#2dd4bf); width:0%; z-index:9999; pointer-events:none; transition:width 0.08s linear; }
+
+        /* Availability pulse */
+        @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.5)} }
+        .availability-pulse { display:inline-block; animation:pulse-dot 2s ease-in-out infinite; }
+
+        /* Typewriter cursor */
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+        .tw-cursor { display:inline-block; width:2px; height:0.85em; background:#2dd4bf; margin-left:3px; vertical-align:text-bottom; animation:blink 1s step-end infinite; }
+
+        /* Scroll indicator */
+        @keyframes bounce-down { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
+        .scroll-indicator { animation:bounce-down 1.8s ease-in-out infinite; }
+        #scroll-cue { transition:opacity 0.6s; }
+
+        /* Avatar glow */
+        @keyframes avatar-glow { 0%,100%{box-shadow:0 0 0 0 rgba(129,140,248,0.4)} 50%{box-shadow:0 0 0 14px rgba(129,140,248,0)} }
+        .avatar-glow { animation:avatar-glow 3s ease-in-out infinite; }
+
+        /* Chart tab */
+        .chart-tab-active { background:rgba(45,212,191,0.15) !important; border-color:rgba(45,212,191,0.5) !important; color:#2dd4bf !important; }
+
+        /* Skill pill */
+        .skill-pill { display:inline-flex; align-items:center; font-size:0.75rem; font-weight:600; padding:0.35rem 0.85rem; border-radius:9999px; border:1px solid rgba(255,255,255,0.1); background:rgba(30,41,59,0.6); color:#cbd5e1; transition:all 0.2s; }
+        .skill-pill:hover { border-color:rgba(129,140,248,0.5); color:#fff; background:rgba(99,102,241,0.1); }
+
+        /* Mobile menu */
+        #mobile-menu { display:none; flex-direction:column; }
+        #mobile-menu.open { display:flex; }
     </style>
+
+    <!-- Schema.org Person structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Michal Kuderski",
+      "url": "https://michalKuderski.github.io",
+      "email": "mkuderski21@gmail.com",
+      "jobTitle": "Data Analyst",
+      "description": "NIU Statistics student specializing in healthcare analytics, supply chain analytics, and SQL-driven decision-making.",
+      "alumniOf": { "@type": "CollegeOrUniversity", "name": "Northern Illinois University" },
+      "sameAs": [
+        "https://github.com/MichalKuderski",
+        "https://www.linkedin.com/in/michal-kuderski-4b10a8230/"
+      ],
+      "knowsAbout": [
+        "Healthcare Analytics","Healthcare Supply Chain Management","SQL","PostgreSQL","MySQL",
+        "R","Python","Pandas","NumPy","Statistical Modeling","Regression Analysis",
+        "A/B Testing","Exploratory Data Analysis","Data Wrangling","ETL","Data Cleaning",
+        "Excel","Tableau","Power BI","CMS Medicare Data","Supply Chain Analytics"
+      ]
+    }
+    </script>
 </head>
 <body class="text-slate-300 antialiased selection:bg-indigo-500/30">
+
+    <div id="scroll-progress"></div>
 
     <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/20 blur-[120px] rounded-full"></div>
@@ -38,43 +108,86 @@
             <div class="hidden md:flex space-x-10 text-xs font-semibold uppercase tracking-widest">
                 <a href="#featured" class="nav-link hover:text-white transition">Featured</a>
                 <a href="#resume" class="nav-link hover:text-white transition">Resume</a>
+                <a href="#skills" class="nav-link hover:text-white transition">Skills</a>
                 <a href="#projects" class="nav-link hover:text-white transition">Projects</a>
                 <a href="https://github.com/MichalKuderski" target="_blank" rel="noopener noreferrer" class="nav-link hover:text-white transition">GitHub</a>
                 <a href="https://www.linkedin.com/in/michal-kuderski-4b10a8230/" target="_blank" rel="noopener noreferrer" class="nav-link hover:text-white transition">LinkedIn</a>
             </div>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mkuderski21@gmail.com" target="_blank" rel="noopener noreferrer" class="text-xs font-bold px-5 py-2 border border-indigo-500/30 rounded-full hover:bg-indigo-500/10 transition">Contact</a>
+            <div class="flex items-center gap-3">
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mkuderski21@gmail.com" target="_blank" rel="noopener noreferrer" class="text-xs font-bold px-5 py-2 border border-indigo-500/30 rounded-full hover:bg-indigo-500/10 transition">Contact</a>
+                <button id="hamburger" onclick="toggleMobileMenu()" class="md:hidden flex flex-col gap-1.5 p-2 rounded-lg hover:bg-white/5 transition" aria-label="Open navigation menu">
+                    <span class="block w-5 h-0.5 bg-slate-300"></span>
+                    <span class="block w-5 h-0.5 bg-slate-300"></span>
+                    <span class="block w-5 h-0.5 bg-slate-300"></span>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="border-t border-white/5 bg-[#0f172a]/95 backdrop-blur-xl px-6 py-4 gap-3 text-sm font-semibold uppercase tracking-widest">
+            <a href="#featured" onclick="closeMobileMenu()" class="block hover:text-white text-slate-400 transition py-1">Featured</a>
+            <a href="#resume" onclick="closeMobileMenu()" class="block hover:text-white text-slate-400 transition py-1">Resume</a>
+            <a href="#skills" onclick="closeMobileMenu()" class="block hover:text-white text-slate-400 transition py-1">Skills</a>
+            <a href="#projects" onclick="closeMobileMenu()" class="block hover:text-white text-slate-400 transition py-1">Projects</a>
+            <a href="https://github.com/MichalKuderski" target="_blank" rel="noopener noreferrer" class="block hover:text-white text-slate-400 transition py-1">GitHub</a>
+            <a href="https://www.linkedin.com/in/michal-kuderski-4b10a8230/" target="_blank" rel="noopener noreferrer" class="block hover:text-white text-slate-400 transition py-1">LinkedIn</a>
         </div>
     </nav>
 
-    <header class="max-w-6xl mx-auto px-6 pt-24 pb-28">
+    <header class="max-w-6xl mx-auto px-6 pt-24 pb-36">
         <div class="max-w-4xl">
-            <div class="flex flex-wrap gap-2 mb-6">
+
+            <!-- Availability badge + industry pills -->
+            <div class="flex flex-wrap items-center gap-3 mb-8">
+                <span class="inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-green-500/40 text-green-400 bg-green-500/10">
+                    <span class="availability-pulse w-2 h-2 rounded-full bg-green-400"></span>
+                    Open to 2026 Analyst Roles
+                </span>
                 <span class="industry-pill"><i class="fas fa-hospital-user"></i> Healthcare Analytics</span>
                 <span class="industry-pill"><i class="fas fa-truck-medical"></i> Healthcare Supply Chain</span>
                 <span class="industry-pill"><i class="fas fa-boxes-stacked"></i> Supply Chain Management</span>
                 <span class="industry-pill"><i class="fas fa-network-wired"></i> Logistics Technology</span>
             </div>
-            <h2 class="text-indigo-400 font-bold tracking-[0.2em] text-xs uppercase mb-4">NIU Statistics Student & Data Analyst</h2>
-            <h1 class="text-6xl md:text-8xl font-extrabold text-white mb-6 tracking-tighter">Michal Kuderski</h1>
-            <h2 class="text-3xl md:text-4xl font-semibold text-slate-400 mb-8 leading-tight">
-                Using data to improve <span class="teal-gradient-text italic">care, cost, and operations.</span>
+
+            <!-- Avatar + name -->
+            <div class="flex items-center gap-6 mb-6">
+                <!-- Replace with <img src="images/headshot.jpg" alt="Michal Kuderski" class="w-full h-full object-cover rounded-full"> when headshot is available -->
+                <div class="avatar-glow w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-indigo-500 to-teal-500 flex items-center justify-center text-white text-2xl font-extrabold ring-2 ring-white/10 flex-shrink-0 select-none">MK</div>
+                <div>
+                    <p class="text-indigo-400 font-bold tracking-[0.2em] text-xs uppercase mb-2">NIU Statistics Student &amp; Data Analyst</p>
+                    <h1 class="text-4xl md:text-7xl font-extrabold text-white tracking-tighter">Michal Kuderski</h1>
+                </div>
+            </div>
+
+            <!-- Typewriter cycling subtitle -->
+            <h2 class="text-2xl md:text-3xl font-semibold text-slate-400 mb-6 leading-tight min-h-[2.5rem]">
+                <span id="typewriter-text" class="teal-gradient-text italic"></span><span class="tw-cursor"></span>
             </h2>
-            <p class="text-lg text-slate-400 leading-relaxed mb-4 max-w-2xl">
-                Analyzed CMS Medicare claims data to identify provider cost-efficiency variation and detect high-cost outliers. Built a relational database and executive dashboard to support healthcare decision-making.
+
+            <!-- About / narrative -->
+            <p class="text-lg text-slate-300 leading-relaxed mb-4 max-w-2xl">
+                I'm drawn to healthcare analytics because data in this field doesn't just measure performance — it shapes lives. My work bridges statistical methods and real-world operations: normalizing raw CMS claims into production-ready PostgreSQL schemas, writing analytical SQL that surfaces cost outliers and telehealth access gaps, and packaging findings into executive-ready KPI dashboards.
             </p>
-            <p class="text-base text-slate-500 leading-relaxed mb-10 max-w-2xl">
+            <p class="text-base text-slate-400 leading-relaxed mb-10 max-w-2xl">
                 Most recently: a full end-to-end analysis of
                 <span class="text-slate-300">2,460 CMS Medicare psychiatry claims</span> for Illinois providers —
                 from raw CSV to normalized PostgreSQL database to executive KPI dashboard —
                 built to simulate the operational workflow of a community mental health organization.
             </p>
-            <div class="flex flex-wrap items-center gap-4">
+
+            <div class="flex flex-wrap items-center gap-4 mb-16">
                 <a href="#featured" class="bg-teal-600 hover:bg-teal-500 text-white px-8 py-4 rounded-xl font-bold transition shadow-2xl shadow-teal-900/40">See the Medicare Project</a>
                 <a href="#projects" class="px-8 py-4 rounded-xl font-bold border border-white/10 hover:bg-white/5 transition text-slate-300">All Projects</a>
-                <div class="flex gap-4 text-slate-500 border-l border-white/10 pl-4">
+                <div class="flex gap-4 text-slate-400 border-l border-white/10 pl-4">
                     <a href="https://github.com/MichalKuderski" target="_blank" rel="noopener noreferrer" class="hover:text-white transition"><i class="fab fa-github text-xl"></i></a>
                     <a href="https://www.linkedin.com/in/michal-kuderski-4b10a8230/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition"><i class="fab fa-linkedin text-xl"></i></a>
                 </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div id="scroll-cue" class="flex justify-start">
+                <button onclick="document.getElementById('featured').scrollIntoView({behavior:'smooth'})" class="scroll-indicator flex flex-col items-center gap-1.5 text-slate-600 hover:text-slate-400 transition cursor-pointer bg-transparent border-0 p-0">
+                    <span class="text-[9px] uppercase tracking-widest font-bold">Scroll</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -110,10 +223,10 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-1 gap-3">
-                    <div class="kpi-box"><p class="text-teal-400 text-xl font-extrabold">$27.2M</p><p class="text-slate-400 text-xs mt-1">Total Medicare Payment</p></div>
-                    <div class="kpi-box"><p class="text-teal-400 text-xl font-extrabold">$70.7M</p><p class="text-slate-400 text-xs mt-1">Total Submitted Charges</p></div>
-                    <div class="kpi-box"><p class="text-teal-400 text-xl font-extrabold">692</p><p class="text-slate-400 text-xs mt-1">Psychiatry Providers</p></div>
-                    <div class="kpi-box"><p class="text-teal-400 text-xl font-extrabold">$51.03</p><p class="text-slate-400 text-xs mt-1">Avg Payment Per Service</p></div>
+                    <div class="kpi-box"><p class="text-teal-400 text-xl font-extrabold" data-kpi="dollar-million" data-raw="27200000">$27.2M</p><p class="text-slate-400 text-xs mt-1">Total Medicare Payment</p></div>
+                    <div class="kpi-box"><p class="text-teal-400 text-xl font-extrabold" data-kpi="dollar-million" data-raw="70700000">$70.7M</p><p class="text-slate-400 text-xs mt-1">Total Submitted Charges</p></div>
+                    <div class="kpi-box"><p class="text-teal-400 text-xl font-extrabold" data-kpi="integer" data-raw="692">692</p><p class="text-slate-400 text-xs mt-1">Psychiatry Providers</p></div>
+                    <div class="kpi-box"><p class="text-teal-400 text-xl font-extrabold" data-kpi="dollar-cents" data-raw="51.03">$51.03</p><p class="text-slate-400 text-xs mt-1">Avg Payment Per Service</p></div>
                 </div>
             </div>
             <div class="border-t border-white/5 mb-8"></div>
@@ -141,14 +254,28 @@
                     <a href="https://github.com/MichalKuderski" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full border border-white/20 text-slate-300 hover:bg-white/5 transition"><i class="fab fa-github"></i> GitHub Repository</a>
                 </div>
             </div>
+
+            <div class="border-t border-white/5 mt-8 pt-8">
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Live Data Insights — Explore the Findings</p>
+                <div class="flex gap-2 mb-6">
+                    <button id="chart-tab-cpt" onclick="switchChart('cpt')" class="chart-tab-active text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 border border-white/10 rounded-full transition">CPT Cost Concentration</button>
+                    <button id="chart-tab-telehealth" onclick="switchChart('telehealth')" class="text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 border border-white/10 rounded-full transition text-slate-400 hover:bg-white/5">Telehealth by City</button>
+                </div>
+                <div class="relative" style="height:260px;">
+                    <canvas id="chart-cpt"></canvas>
+                    <canvas id="chart-telehealth" style="display:none;"></canvas>
+                </div>
+                <p class="text-[10px] text-slate-600 mt-3">Source: CMS Medicare Physician &amp; Other Practitioners PUF 2023 · Illinois Psychiatry Providers</p>
+            </div>
         </div>
     </section>
 
     <section id="resume" class="max-w-6xl mx-auto px-6 pb-24">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
             <div><p class="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-1">Resume</p><h2 class="text-3xl font-bold text-white mb-2">Two Tailored Versions</h2></div>
             <div class="h-[1px] flex-grow mx-8 bg-white/5 hidden md:block"></div>
         </div>
+        <p class="text-slate-400 text-sm mb-6 max-w-2xl">Each version is tailored to the role — healthcare-focused for clinical and HSCM positions, standard for broader analytics and data roles.</p>
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
             <div class="flex gap-2">
                 <button id="btn-standard" onclick="switchResume('standard')" class="resume-tab-active text-xs font-bold px-5 py-2 border border-white/10 rounded-full transition">Standard</button>
@@ -162,6 +289,100 @@
             <iframe id="resume-frame" src="resume-standard.pdf" class="w-full h-full border-0" title="Resume Preview">
                 <p class="text-slate-400 p-8">Your browser does not support inline PDF preview. <a href="resume-standard.pdf" class="text-indigo-400 underline">Download instead.</a></p>
             </iframe>
+        </div>
+    </section>
+
+    <!-- Skills & Tools -->
+    <section id="skills" class="max-w-6xl mx-auto px-6 pb-24">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+                <p class="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-1">Skills &amp; Tools</p>
+                <h2 class="text-3xl font-bold text-white">Technical Toolkit</h2>
+            </div>
+            <div class="h-[1px] flex-grow mx-8 bg-white/5 hidden md:block"></div>
+        </div>
+        <div class="glass-card rounded-3xl p-8 md:p-10 grid md:grid-cols-2 gap-10">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Languages &amp; Query</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-pill"><i class="fab fa-python mr-1.5 text-indigo-400"></i>Python</span>
+                    <span class="skill-pill">R</span>
+                    <span class="skill-pill"><i class="fas fa-database mr-1.5 text-teal-400"></i>SQL</span>
+                    <span class="skill-pill">PostgreSQL</span>
+                    <span class="skill-pill">MySQL</span>
+                </div>
+            </div>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Analytics &amp; Modeling</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-pill">Statistical Modeling</span>
+                    <span class="skill-pill">Regression Analysis</span>
+                    <span class="skill-pill">A/B Testing</span>
+                    <span class="skill-pill">Exploratory Data Analysis</span>
+                    <span class="skill-pill">Pandas</span>
+                    <span class="skill-pill">NumPy</span>
+                </div>
+            </div>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Data Engineering</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-pill">ETL Pipelines</span>
+                    <span class="skill-pill">Data Wrangling</span>
+                    <span class="skill-pill">Data Cleaning</span>
+                    <span class="skill-pill">CTEs &amp; Window Functions</span>
+                    <span class="skill-pill">Relational Database Design</span>
+                </div>
+            </div>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Visualization &amp; BI</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-pill">Tableau</span>
+                    <span class="skill-pill">Power BI</span>
+                    <span class="skill-pill">Excel Dashboards</span>
+                    <span class="skill-pill">Pivot Tables</span>
+                    <span class="skill-pill">KPI Reporting</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education -->
+    <section id="education" class="max-w-6xl mx-auto px-6 pb-24">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+                <p class="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-1">Education</p>
+                <h2 class="text-3xl font-bold text-white">Academic Background</h2>
+            </div>
+            <div class="h-[1px] flex-grow mx-8 bg-white/5 hidden md:block"></div>
+        </div>
+        <div class="glass-card rounded-3xl p-8 md:p-10">
+            <div class="flex flex-col md:flex-row md:items-start gap-6">
+                <div class="p-4 bg-indigo-500/10 rounded-2xl text-indigo-400 flex-shrink-0">
+                    <i class="fas fa-graduation-cap text-3xl"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Bachelor of Science — Statistics</h3>
+                            <p class="text-teal-400 font-semibold mt-1">Northern Illinois University · DeKalb, IL</p>
+                        </div>
+                        <span class="text-xs font-bold px-3 py-1 border border-indigo-500/30 text-indigo-300 rounded-full bg-indigo-500/5 flex-shrink-0 self-start">Expected May 2026</span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">Quantitative foundation in probability theory, mathematical statistics, and applied data modeling — oriented toward real-world analytical decision-making in healthcare and operations.</p>
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Relevant Coursework</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Probability Theory</span>
+                            <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Statistical Methods</span>
+                            <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Linear Regression</span>
+                            <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Time Series Analysis</span>
+                            <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Data Mining</span>
+                            <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Linear Algebra</span>
+                            <span class="text-[10px] font-bold px-3 py-1 border border-white/10 rounded-lg bg-white/5">Mathematical Statistics</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -207,6 +428,25 @@
         </div>
     </main>
 
+    <!-- CTA / Contact section -->
+    <section class="max-w-6xl mx-auto px-6 pb-32">
+        <div class="featured-card rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/20 to-teal-900/10 pointer-events-none rounded-3xl"></div>
+            <div class="relative z-10">
+                <span class="inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-green-500/40 text-green-400 bg-green-500/10 mb-6">
+                    <span class="availability-pulse w-2 h-2 rounded-full bg-green-400"></span>
+                    Open to 2026 Analyst Roles
+                </span>
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">Let's connect.</h2>
+                <p class="text-slate-400 text-lg max-w-xl mx-auto mb-8 leading-relaxed">I'm actively seeking full-time analyst roles in healthcare analytics, healthcare supply chain, or data-driven operations. If you're looking for someone who can turn raw data into decisions — let's talk.</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mkuderski21@gmail.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-4 rounded-xl transition shadow-2xl shadow-indigo-900/40"><i class="fas fa-envelope"></i> mkuderski21@gmail.com</a>
+                    <a href="https://www.linkedin.com/in/michal-kuderski-4b10a8230/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border border-white/10 hover:bg-white/5 transition text-slate-300"><i class="fab fa-linkedin"></i> LinkedIn Profile</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer class="border-t border-white/5 py-20 bg-black/20">
         <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
             <div class="text-center md:text-left">
@@ -222,6 +462,7 @@
     </footer>
 
     <script>
+        // ── Resume toggle ─────────────────────────────────────────────────────────
         function switchResume(version) {
             const frame=document.getElementById('resume-frame'), dlBtn=document.getElementById('download-btn'),
                   dlLbl=document.getElementById('download-label'), btnStd=document.getElementById('btn-standard'),
@@ -236,6 +477,155 @@
                 dlLbl.textContent='Download Healthcare Resume';
                 btnHc.classList.add('resume-tab-active'); btnHc.classList.remove('text-slate-400');
                 btnStd.classList.remove('resume-tab-active'); btnStd.classList.add('text-slate-400');
+            }
+        }
+
+        // ── Scroll progress bar ───────────────────────────────────────────────────
+        window.addEventListener('scroll', () => {
+            const st = document.documentElement.scrollTop;
+            const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('scroll-progress').style.width = (st / sh * 100) + '%';
+            const cue = document.getElementById('scroll-cue');
+            if (cue && st > 60) cue.style.opacity = '0';
+        });
+
+        // ── Mobile hamburger menu ─────────────────────────────────────────────────
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('open');
+        }
+        function closeMobileMenu() {
+            document.getElementById('mobile-menu').classList.remove('open');
+        }
+
+        // ── Typewriter cycling subtitle ───────────────────────────────────────────
+        const twPhrases = [
+            'Using data to improve care, cost, and operations.',
+            'Turning Medicare claims into executive decisions.',
+            'SQL \u2192 PostgreSQL \u2192 Dashboard \u2192 Insight.'
+        ];
+        let twIdx = 0, twChar = 0, twDeleting = false;
+        const twEl = document.getElementById('typewriter-text');
+        function typeLoop() {
+            const cur = twPhrases[twIdx];
+            if (!twDeleting) {
+                twEl.textContent = cur.substring(0, twChar + 1);
+                twChar++;
+                if (twChar === cur.length) { twDeleting = true; setTimeout(typeLoop, 2400); return; }
+            } else {
+                twEl.textContent = cur.substring(0, twChar - 1);
+                twChar--;
+                if (twChar === 0) { twDeleting = false; twIdx = (twIdx + 1) % twPhrases.length; }
+            }
+            setTimeout(typeLoop, twDeleting ? 38 : 62);
+        }
+        setTimeout(typeLoop, 500);
+
+        // ── KPI count-up animation (IntersectionObserver) ─────────────────────────
+        function animateKPI(el) {
+            const raw = parseFloat(el.dataset.raw);
+            const type = el.dataset.kpi;
+            const duration = 1500;
+            const startTime = performance.now();
+            function tick(now) {
+                const p = Math.min((now - startTime) / duration, 1);
+                const ease = 1 - Math.pow(1 - p, 3);
+                const v = raw * ease;
+                if (type === 'dollar-million') el.textContent = '$' + (v / 1e6).toFixed(1) + 'M';
+                else if (type === 'dollar-cents') el.textContent = '$' + v.toFixed(2);
+                else el.textContent = Math.round(v).toString();
+                if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+        const kpiObs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting && !e.target.dataset.animated) {
+                    e.target.dataset.animated = '1';
+                    animateKPI(e.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('[data-kpi]').forEach(el => kpiObs.observe(el));
+
+        // ── Chart.js — Medicare Live Insights ────────────────────────────────────
+        const chartTooltipDefaults = {
+            backgroundColor: 'rgba(15,23,42,0.95)',
+            titleColor: '#e2e8f0',
+            bodyColor: '#94a3b8',
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 1,
+            padding: 10
+        };
+
+        // Doughnut — CPT cost concentration (uses confirmed % data from project)
+        new Chart(document.getElementById('chart-cpt').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['99214 — Top CPT Code', 'Other Top-4 Codes (#2–5)', 'All Remaining Codes'],
+                datasets: [{
+                    data: [20.8, 34.8, 44.4],
+                    backgroundColor: ['rgba(45,212,191,0.85)', 'rgba(129,140,248,0.75)', 'rgba(51,65,85,0.85)'],
+                    borderColor: ['#2dd4bf', '#818cf8', '#334155'],
+                    borderWidth: 2,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '62%',
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        labels: { color: '#94a3b8', font: { size: 11, family: "'Plus Jakarta Sans', sans-serif" }, padding: 14, boxWidth: 11, boxHeight: 11 }
+                    },
+                    tooltip: { ...chartTooltipDefaults, callbacks: { label: c => ' ' + c.raw + '% of total Medicare payments' } }
+                }
+            }
+        });
+
+        // Bar — Telehealth access by city (confirmed data points from project SQL)
+        new Chart(document.getElementById('chart-telehealth').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Elk Grove Village', 'DeKalb', 'Chicago'],
+                datasets: [{
+                    label: '% Services via Telephone',
+                    data: [76.7, 52.3, 1.9],
+                    backgroundColor: ['rgba(45,212,191,0.8)', 'rgba(129,140,248,0.8)', 'rgba(248,113,113,0.75)'],
+                    borderColor: ['#2dd4bf', '#818cf8', '#f87171'],
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { ...chartTooltipDefaults, callbacks: { label: c => ' ' + c.raw + '% of services via telephone' } }
+                },
+                scales: {
+                    x: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: { max: 100, ticks: { color: '#64748b', font: { size: 11 }, callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                }
+            }
+        });
+
+        function switchChart(type) {
+            const cptC  = document.getElementById('chart-cpt');
+            const thC   = document.getElementById('chart-telehealth');
+            const tabCpt = document.getElementById('chart-tab-cpt');
+            const tabTh  = document.getElementById('chart-tab-telehealth');
+            if (type === 'cpt') {
+                cptC.style.display = ''; thC.style.display = 'none';
+                tabCpt.classList.add('chart-tab-active'); tabCpt.classList.remove('text-slate-400');
+                tabTh.classList.remove('chart-tab-active'); tabTh.classList.add('text-slate-400');
+            } else {
+                thC.style.display = ''; cptC.style.display = 'none';
+                tabTh.classList.add('chart-tab-active'); tabTh.classList.remove('text-slate-400');
+                tabCpt.classList.remove('chart-tab-active'); tabCpt.classList.add('text-slate-400');
             }
         }
     </script>
