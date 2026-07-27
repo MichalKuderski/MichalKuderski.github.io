@@ -103,8 +103,6 @@ CREATE INDEX idx_prov_type     ON providers(provider_type);
 -- ------------------------------------------------------------
 -- 2A. STAGING TABLE (mirrors CSV structure exactly)
 -- ------------------------------------------------------------
-DROP TABLE IF EXISTS staging_raw;
-
 CREATE TEMP TABLE staging_raw (
     Rndrng_NPI                  TEXT,
     Rndrng_Prvdr_Last_Org_Name  TEXT,
@@ -142,11 +140,11 @@ CREATE TEMP TABLE staging_raw (
 --     HEADER skips the first row. CSV handles quoted fields.
 -- ------------------------------------------------------------
 COPY staging_raw
-FROM '/Users/michalkuderski/Data_Analytics_Portfolio/Medicare_Physician_Other_Practitioners_by_Provider_and_Service_2023.csv'
+FROM '/your/path/to/Medicare_Physician_Other_Practitioners_by_Provider_and_Service_2023.csv'
 WITH (FORMAT CSV, HEADER TRUE, ENCODING 'UTF8');
 
 -- Quick row count to verify load
-SELECT COUNT(*) FROM staging_raw;
+-- SELECT COUNT(*) FROM staging_raw;
 
 -- ------------------------------------------------------------
 -- 2C. POPULATE NORMALIZED TABLES FROM STAGING
@@ -411,9 +409,9 @@ WITH procedure_spend AS (
         COUNT(DISTINCT u.npi)                                           AS provider_count,
         SUM(u.tot_benes)                                                AS total_beneficiaries,
         SUM(u.tot_srvcs)                                                AS total_services,
-        ROUND(SUM(u.avg_medicare_payment  * u.tot_srvcs), 2)            AS total_payment,
-        ROUND(SUM(u.avg_medicare_allowed  * u.tot_srvcs), 2)            AS total_allowed,
-        ROUND(SUM(u.avg_submitted_charge  * u.tot_srvcs), 2)            AS total_submitted,
+        ROUND(SUM(u.avg_medicare_payment  * u.tot_srvcs), 2)           AS total_payment,
+        ROUND(SUM(u.avg_medicare_allowed  * u.tot_srvcs), 2)           AS total_allowed,
+        ROUND(SUM(u.avg_submitted_charge  * u.tot_srvcs), 2)           AS total_submitted,
 
         -- Per-service cost benchmark
         ROUND(
@@ -456,21 +454,11 @@ LIMIT 25;  -- Top 25 procedures by Medicare spend
 -- COST EFFICIENCY VARIATION ACROSS PROVIDERS
 -- WITHIN THE SAME SPECIALTY
 --
--- PRIMARY METRIC: avg_medicare_payment PER SERVICE (clean denominator).
---   Service units (tot_srvcs) are fully additive across HCPCS codes.
---
--- ⚠ IMPORTANT — SUM(tot_benes) DOUBLE-COUNTS BENEFICIARIES:
---   The CMS data dictionary defines tot_benes as distinct beneficiaries
---   per (NPI, HCPCS_Cd, Place_Of_Srvc) row. A patient receiving both
---   99214 and 99232 from the same provider appears in two rows' counts.
---   SUM(tot_benes) at provider level inflates by ~2.4x on average.
---   True unique-beneficiary counts per provider require raw claims data.
---   This query retains sum_benes_approx as a secondary reference column
---   but does NOT use it as a z-score or efficiency denominator.
---
--- Z-SCORE FORMULA (unit-consistent):
---   z = (provider_avg_pay_per_svc - specialty_mean_pay_per_svc)
---       / specialty_stddev_pay_per_svc
+-- "Cost efficiency" here = avg Medicare payment per beneficiary.
+-- A provider seeing more services per beneficiary may indicate
+-- higher acuity patients OR over-utilization — context matters.
+-- This query shows the spread (min/max/stddev) within each
+-- specialty and surfaces individual provider-level detail.
 -- ------------------------------------------------------------
 
 WITH provider_efficiency AS (
@@ -482,35 +470,24 @@ WITH provider_efficiency AS (
         p.provider_type                                                 AS specialty,
         p.medicare_participates,
         COUNT(DISTINCT u.hcpcs_cd)                                      AS distinct_procedures,
-
-        -- ⚠ Approximate only — double-counts patients billed under multiple codes
-        SUM(u.tot_benes)                                                AS sum_benes_approx,
-
-        -- Clean, additive denominator — use this for efficiency KPIs
+        SUM(u.tot_benes)                                                AS total_beneficiaries,
         SUM(u.tot_srvcs)                                                AS total_services,
-
         ROUND(SUM(u.avg_medicare_payment * u.tot_srvcs), 2)             AS total_payment,
 
-        -- PRIMARY efficiency metric: payment per service unit (clean denominator)
-        ROUND(
-            SUM(u.avg_medicare_payment * u.tot_srvcs) /
-            NULLIF(SUM(u.tot_srvcs), 0),
-        2)                                                              AS avg_pay_per_service,
-
-        -- SECONDARY / APPROXIMATE: payment per beneficiary
-        -- ⚠ Denominator inflated ~2.4x — reference only, do not z-score
-        ROUND(
-            SUM(u.avg_medicare_payment * u.tot_srvcs) /
-            NULLIF(SUM(u.tot_benes), 0),
-        2)                                                              AS avg_pay_per_bene_approx,
-
-        -- Services per beneficiary (approximate — inherits double-counting)
+        -- Services per beneficiary: higher = more services per patient
         ROUND(
             SUM(u.tot_srvcs) /
             NULLIF(SUM(u.tot_benes), 0),
-        2)                                                              AS srvcs_per_bene_approx,
+        2)                                                              AS srvcs_per_beneficiary,
 
-        -- Charge-to-payment ratio: indicates billing markup
+        -- Payment per beneficiary: total spend allocated to each unique patient
+        ROUND(
+            SUM(u.avg_medicare_payment * u.tot_srvcs) /
+            NULLIF(SUM(u.tot_benes), 0),
+        2)                                                              AS payment_per_beneficiary,
+
+        -- Charge-to-payment ratio: indicates markup aggressiveness
+        -- High ratio (e.g., 5.0) = provider bills 5x what Medicare actually pays
         ROUND(
             SUM(u.avg_submitted_charge * u.tot_srvcs) /
             NULLIF(SUM(u.avg_medicare_payment * u.tot_srvcs), 0),
@@ -521,66 +498,65 @@ WITH provider_efficiency AS (
     GROUP BY p.npi, p.first_name, p.last_org_name, p.city, p.provider_type, p.medicare_participates
 ),
 
--- Specialty-level distribution — ALL stats on avg_pay_per_service (clean units)
+-- Specialty-level distribution statistics
 specialty_stats AS (
     SELECT
         specialty,
         COUNT(*)                                                        AS provider_count,
-        ROUND(AVG(avg_pay_per_service), 2)                              AS mean_pay_per_svc,
-        ROUND(STDDEV(avg_pay_per_service), 2)                           AS stddev_pay_per_svc,
-        ROUND(MIN(avg_pay_per_service), 2)                              AS min_pay_per_svc,
-        ROUND(MAX(avg_pay_per_service), 2)                              AS max_pay_per_svc,
+        ROUND(AVG(payment_per_beneficiary), 2)                         AS mean_pay_per_bene,
+        ROUND(STDDEV(payment_per_beneficiary), 2)                      AS stddev_pay_per_bene,
+        ROUND(MIN(payment_per_beneficiary), 2)                         AS min_pay_per_bene,
+        ROUND(MAX(payment_per_beneficiary), 2)                         AS max_pay_per_bene,
         ROUND(
-            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY avg_pay_per_service)::NUMERIC,
-        2)                                                              AS median_pay_per_svc,
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY payment_per_beneficiary)::NUMERIC,
+        2)                                                              AS median_pay_per_bene,
         ROUND(
-            PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY avg_pay_per_service)::NUMERIC,
-        2)                                                              AS p25_pay_per_svc,
+            PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY payment_per_beneficiary)::NUMERIC,
+        2)                                                              AS p25_pay_per_bene,
         ROUND(
-            PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY avg_pay_per_service)::NUMERIC,
-        2)                                                              AS p75_pay_per_svc
+            PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY payment_per_beneficiary)::NUMERIC,
+        2)                                                              AS p75_pay_per_bene
     FROM provider_efficiency
-    WHERE total_services >= 10   -- Minimum volume for reliability
+    WHERE total_beneficiaries >= 10  -- Minimum volume for statistical reliability
     GROUP BY specialty
 )
 
+-- Join individual metrics to specialty distribution for full context
 SELECT
     pe.specialty,
     pe.npi,
     CONCAT(pe.first_name, ' ', pe.last_org_name)        AS provider_name,
     pe.city,
     pe.medicare_participates,
+    pe.total_beneficiaries,
+    pe.total_services,
     pe.distinct_procedures,
-    pe.sum_benes_approx,        -- ⚠ reference only — inflated denominator
-    pe.total_services,          -- ✓ clean, additive
-    pe.total_payment,
-    pe.avg_pay_per_service,     -- ✓ primary efficiency metric
-    pe.avg_pay_per_bene_approx, -- ⚠ approximate
-    pe.srvcs_per_bene_approx,   -- ⚠ approximate
+    pe.srvcs_per_beneficiary,
+    pe.payment_per_beneficiary,
     pe.charge_to_payment_ratio,
-    ss.mean_pay_per_svc                                 AS specialty_mean_pay_per_svc,
-    ss.median_pay_per_svc                               AS specialty_median_pay_per_svc,
-    ss.stddev_pay_per_svc                               AS specialty_stddev_pay_per_svc,
-    ss.p25_pay_per_svc                                  AS specialty_p25,
-    ss.p75_pay_per_svc                                  AS specialty_p75,
+    ss.mean_pay_per_bene                                AS specialty_mean,
+    ss.median_pay_per_bene                              AS specialty_median,
+    ss.stddev_pay_per_bene                              AS specialty_stddev,
+    ss.p25_pay_per_bene                                 AS specialty_p25,
+    ss.p75_pay_per_bene                                 AS specialty_p75,
 
-    -- CORRECT z-score: all terms in payment_per_service units — no mixing
+    -- Z-score: how many standard deviations from the specialty mean
     ROUND(
-        (pe.avg_pay_per_service - ss.mean_pay_per_svc) /
-        NULLIF(ss.stddev_pay_per_svc, 0),
+        (pe.payment_per_beneficiary - ss.mean_pay_per_bene) /
+        NULLIF(ss.stddev_pay_per_bene, 0),
     2)                                                  AS z_score,
 
-    -- Efficiency tier relative to specialty IQR (on pay/service)
+    -- Efficiency tier based on position relative to specialty IQR
     CASE
-        WHEN pe.avg_pay_per_service > ss.p75_pay_per_svc THEN 'Above IQR (Higher Cost)'
-        WHEN pe.avg_pay_per_service < ss.p25_pay_per_svc THEN 'Below IQR (Lower Cost)'
+        WHEN pe.payment_per_beneficiary > ss.p75_pay_per_bene THEN 'Above IQR (Higher Cost)'
+        WHEN pe.payment_per_beneficiary < ss.p25_pay_per_bene THEN 'Below IQR (Lower Cost)'
         ELSE 'Within IQR (Typical)'
     END                                                 AS efficiency_tier
 
 FROM provider_efficiency pe
 JOIN specialty_stats ss ON pe.specialty = ss.specialty
-WHERE pe.total_services >= 10
-ORDER BY pe.specialty, pe.avg_pay_per_service DESC;
+WHERE pe.total_beneficiaries >= 10
+ORDER BY pe.specialty, pe.payment_per_beneficiary DESC;
 
 
 -- ============================================================
@@ -624,7 +600,7 @@ SELECT
 FROM base
 ORDER BY total_payment DESC;
 
-SELECT * FROM vw_specialty_summary;
+-- SELECT * FROM vw_specialty_summary;
 
 
 -- ------------------------------------------------------------
@@ -657,7 +633,7 @@ JOIN hcpcs_codes h ON u.hcpcs_cd = h.hcpcs_cd
 GROUP BY h.hcpcs_cd, h.hcpcs_desc, h.drug_indicator
 ORDER BY total_payment DESC;
 
-SELECT * FROM vw_procedure_summary;
+-- SELECT * FROM vw_procedure_summary;
 
 
 -- ------------------------------------------------------------
@@ -707,44 +683,9 @@ GROUP BY
     p.medicare_participates
 ORDER BY total_payment DESC;
 
-SELECT * FROM vw_provider_kpi;
+-- SELECT * FROM vw_provider_kpi;
 
--- ----------------------------------------------------------------------------------
--- Query combining 1) Telephone visit rows - specific HCPCS codes in 'utilization' 
--- &&
---                 2) City names - stored in 'providers,' linked by 'npi'
--- ----------------------------------------------------------------------------------
 
-WITH city_totals AS (
-    -- total services per city, ALL codes, no filter
-    SELECT
-        p.city,
-        SUM(u.tot_srvcs) AS all_services
-    FROM utilization u
-    JOIN providers p ON u.npi = p.npi
-    GROUP BY p.city
-),
-
-telephone_by_city AS (
-    -- telephone services per city only
-    SELECT
-        p.city,
-        COUNT(DISTINCT u.npi)                              AS provider_count,
-        SUM(u.tot_srvcs)                                   AS total_telephone_services,
-        ROUND(SUM(u.avg_medicare_payment * u.tot_srvcs),2) AS total_medicare_payment
-    FROM utilization u
-    JOIN providers p ON u.npi = p.npi
-    WHERE u.hcpcs_cd IN ('99441','99442','99443')
-    GROUP BY p.city
-)
-
-SELECT
-    t.city,
-    t.provider_count,
-    t.total_telephone_services,
-    t.total_medicare_payment,
-    ROUND(t.total_telephone_services / NULLIF(c.all_services, 0) * 100, 1)
-        AS telephone_pct_of_total_services
-FROM telephone_by_city t
-JOIN city_totals c ON t.city = c.city
-ORDER BY t.total_telephone_services DESC;
+-- ============================================================
+-- END OF SCRIPT
+-- ============================================================
