@@ -1,80 +1,47 @@
-# Michal Kuderski - Data Portfolio
+# Michal Kuderski — Data Analyst Portfolio
 
-Welcome to my personal portfolio website showcasing my data analysis and statistical modeling projects.
+Live site: https://michalkuderski.github.io/
 
-## 📁 How to Save Folders in Git/GitHub
+A static portfolio presenting spending analysis, retail trials, reporting automation, statistical research, classification, and ANOVA simulation. Built with semantic HTML, responsive CSS, and optional JavaScript. No external fonts, analytics trackers, package install, build step, or server runtime is required.
 
-### The Problem
-Git doesn't track empty directories. When you create a folder on your Mac's Finder and try to commit it to GitHub, the folder won't appear in GitHub Desktop if it's empty.
+## Files
 
-### The Solution
-To make Git track a folder, you need at least one file inside it. There are two common approaches:
+- `index.html`: content, static charts, SQL examples, and metadata.
+- `css/portfolio.css`: typography and responsive layouts. SQL surfaces explicitly own both background and text colors.
+- `js/portfolio.js`: mobile menu, section tracking, keyboard focus handling, query copying, line wrapping, and email copying. Core content and navigation work without JavaScript.
+- `images/*.webp`: optimized portrait and resume thumbnails.
+- `og-image.png`: social preview.
+- `medicare_analytics.sql`: schema, import, six analysis queries, export views, and data-quality checks.
+- Original workbook, PDF summary, and resumes: retained downloadable evidence.
+- `PORTFOLIO_AUDIT.md`: implemented changes and remaining evidence gaps.
+- `scripts/verify_portfolio.py`: asset/anchor checks, code consistency, contrast regression, and workbook metric reconciliation.
 
-#### Option 1: Add a `.gitkeep` file (Recommended)
-This is a convention used to track empty directories. The `.gitkeep` file is just a placeholder that tells Git to include the folder.
+GitHub Pages uses the repository's existing deployment configuration. Commit HTML, CSS, JavaScript, and assets together.
 
-```bash
-# Create a folder
-mkdir my-folder
-
-# Add a .gitkeep file to make Git track it
-touch my-folder/.gitkeep
-
-# Now Git will track this folder!
-git add my-folder/.gitkeep
-git commit -m "Add my-folder directory"
-```
-
-#### Option 2: Add an empty `.gitignore` file
-Another common approach is to add an empty `.gitignore` file in the directory.
+## Verify
 
 ```bash
-mkdir my-folder
-touch my-folder/.gitignore
-git add my-folder/.gitignore
-git commit -m "Add my-folder directory"
+python scripts/verify_portfolio.py
+node --check js/portfolio.js
+git diff --check
 ```
 
-### Using GitHub Desktop on Mac
-1. **Create folders** in Finder as usual
-2. **Add a `.gitkeep` file** to each empty folder you want to track
-3. **Open GitHub Desktop** - you should now see the folders listed
-4. **Commit and push** your changes
+If `pglast` is installed, the verifier also parses the full PostgreSQL script and displayed snippets. Parsing checks syntax, not execution or analytical validity. Review the deployed page at desktop and narrow widths, including keyboard navigation, the mobile menu, SQL colors, query copy/wrap controls, and data tables.
 
-## 📂 Project Structure
+## Data conventions
 
-This repository is organized as follows:
+Medicare source: CMS **Medicare Physician & Other Practitioners — by Provider and Service**, 2023. One published aggregate record per provider × HCPCS code × place of service; these are not individual claims. Illinois Psychiatry cohort: 2,460 records, 692 providers, 96 codes.
 
-```
-.
-├── index.html          # Main portfolio page
-├── css/                # CSS stylesheets (currently using CDN)
-├── js/                 # JavaScript files
-├── images/             # Image assets
-└── assets/             # Other assets
-    ├── icons/          # Icon files
-    └── documents/      # PDF, resume, etc.
-```
+Charts are snapshots reconciled against `Medicare_Psychiatry_Analytics_IL_2023.xlsx`. Payment is reconstructed as `SUM(avg_medicare_payment * tot_srvcs)`; payment per service unit uses total payment divided by total units. Service units are not necessarily visits. Summed row-level distinct beneficiary counts are not unique patients; beneficiary-based outputs are labeled approximate.
 
-Each empty folder contains a `.gitkeep` file so Git tracks the folder structure. Once you add actual files (CSS, JS, images), you can delete the `.gitkeep` files if you want.
+Telephone-coded share uses 99441–99443 service units divided by all published units in each provider city. It does not measure all telehealth, all psychiatric care, patient residence, or transportation barriers. Total-provider and telephone-provider counts differ.
 
-## 🚀 Live Site
+The SQL was revised in October 2026: Q3.5 uses payment per service, Q3.6 records explicit city denominators, and beneficiary sums/ratios have approximate labels. The raw 2023 source CSV is not bundled, and the revised script has not been rerun against it during the website revision. Use a dedicated project database, review the rebuild section, and update the import path. Rebuilds replace the project's existing tables and views in `portfolio_medicare`.
 
-Visit the portfolio at: [https://michalkuderski.github.io](https://michalkuderski.github.io)
+Retail is a virtual job simulation; automation is a small demonstration; student analysis is collaborative coursework. Do not claim client revenue, measured time savings, causal effects, or sole authorship without evidence.
 
-## 💼 Featured Projects
-
-- **Quantium Retail Strategy** - Retail analytics using R
-- **Corn Yield ANOVA** - Agricultural statistical simulation
-- **ML Classification** - Animal classification with Random Forest
-- **Student Performance Modeling** - Predictive analytics for academic success
-
-## 📫 Contact
+## Contact
 
 - Email: mkuderski21@gmail.com
-- LinkedIn: [Michal Kuderski](https://www.linkedin.com/in/michal-kuderski-4b10a8230/)
-- GitHub: [MichalKuderski](https://github.com/MichalKuderski)
-
----
-
-**Note for Mac Users**: Remember, Git tracks *files*, not folders. Always add at least one file (like `.gitkeep`) to any folder you want to include in your repository.
+- LinkedIn: https://www.linkedin.com/in/michal-kuderski-4b10a8230/
+- GitHub: https://github.com/MichalKuderski
