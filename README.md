@@ -4,6 +4,29 @@ Live site: https://michalkuderski.github.io/
 
 A static portfolio presenting spending analysis, retail trials, reporting automation, statistical research, classification, and ANOVA simulation. Built with semantic HTML, responsive CSS, and optional JavaScript. No external fonts, analytics trackers, package install, build step, or server runtime is required.
 
+## Featured case studies
+
+1. **Medicare spending analysis** — SQL/PostgreSQL, weighted metrics, and an Excel reporting workbook. The full case study remains on the home page.
+2. **Quantium retail trial evaluation** — `projects/quantium.html`. Original R simulation plus an explicitly documented independent reconstruction from pinned raw transactions. Includes signed sales/customer comparisons, monthly data, matching scores, sensitivity results, corrected charts, and source code. These are descriptive comparisons, not validated causal uplift or annual revenue projections.
+3. **Dreaming in Different Cultures** — `projects/dreaming.html`. NIU CURE/Honors capstone, with the original paper, four extracted figures, method explanation, and an evidence review. Findings are labeled as reported in the paper; the corpus, final executable analysis, and numeric model outputs are needed for full independent reproduction.
+
+Reporting automation follows the three featured projects; student performance, classification, and experimental-design coursework provide additional depth.
+
+### Verify and regenerate the retail snapshot
+
+The source CSV lives in `MichalKuderski/Quantium-Retail-Data-Analysis` at commit `87efe6c29ea423acb4184d5eaf2b83275bcb10d8`. Its SHA-256 and all cleaning counts are recorded in `assets/projects/quantium/validation.json`.
+
+```bash
+python scripts/verify_quantium.py /path/to/QVI_transaction_data.csv
+python scripts/verify_portfolio.py
+python scripts/verify_case_studies.py
+node --check js/portfolio.js
+```
+
+The retail generator requires pandas, numpy, and matplotlib. It does not install packages or export customer-level records. A separate CSV parser using integer-cent arithmetic checks monthly aggregates. The revised R companion is supplied for review but was not executed in the editing environment. The site itself needs no Python or R runtime.
+
+Original draft charts/code remain distinct from the revised snapshot. Empty DreamSAT workbooks are not presented as completed dashboards. See each project's `evidence-notes.md` for assumptions, limitations, and the outstanding files that would strengthen reproducibility.
+
 ## Files
 
 - `index.html`: content, static charts, SQL examples, and metadata.

@@ -1,0 +1,279 @@
+---
+title: "Senior Capstone Project code"
+author: "Michal Kuderski"
+date: "2026-01-14"
+output: pdf_document
+---
+
+# Install necessary packages
+
+```{r}
+install.packages(c("tidyverse", "rvest", "quanteda", "topicmodels", "tidytext", "broom"))
+```
+
+# Load libraries
+
+```{r}
+library(tidyverse)  # For data manipulation
+library(rvest)      # For web scraping
+library(quanteda)   # For advanced text analysis (LDA prep)
+library(tidytext)   # For cleaning text
+library(topicmodels)# For the LDA algorithm
+library(broom)      # For tidying statistical model outputs
+```
+
+# --- NEW STRATEGY: STACK SAMPLES TO HIT 1000+ ---
+
+# Helper function to get a larger combined sample
+```{r}
+get_large_sample <- function(id, label) {
+  batch1 <- get_dreams(id, label)
+  batch2 <- get_dreams(id, label) # A second random pull
+  return(bind_rows(batch1, batch2) %>% distinct(text, .keep_all = TRUE))
+}
+```
+
+# 1. American Data (Norms)
+```{r}
+us_fem <- get_large_sample("norms-f", "USA")
+us_mal <- get_large_sample("norms-m", "USA")
+us_fem
+us_mal
+```
+
+# 2. Peruvian Data (Urbina)
+```{r}
+peru_fem <- get_large_sample("peru-f", "Peru")
+peru_mal <- get_large_sample("peru-m", "Peru")
+peru_fem
+peru_mal
+```
+
+# 3. Japanese Data (Vogel/Yamanaka)
+```{r}
+jp_school_fem <- get_large_sample("vogel-f", "Japan")
+jp_school_mal <- get_large_sample("vogel-m", "Japan")
+jp_college    <- get_large_sample("yamanaka", "Japan")
+jp_school_fem
+jp_school_mal
+jp_college
+```
+
+# --- APPLY COHORTS --- **ONLY INCLUDE COLLEGE STUDENTS, GET RID OF SCHOOL CHILD COHORT**
+```{r}
+us_fem$cohort <- "College Student"
+us_mal$cohort <- "College Student"
+peru_fem$cohort <- "College Student"
+peru_mal$cohort <- "College Student"
+jp_school_fem$cohort <- "School Child"
+jp_school_mal$cohort <- "School Child"
+jp_college$cohort <- "College Student"
+
+us_fem$cohort
+us_mal$cohort
+peru_fem$cohort
+peru_mal$cohort
+jp_school_fem$cohort
+jp_school_mal$cohort
+jp_college$cohort
+```
+
+# --- COMBINE --- **DON'T INCLUDE ENTIRE 1760 SAMPLE IN POSTER PDF, ONLY SHOW AN EXAMPLE DREAM REPORT FROM A MALE + FEMALE IN U.S, JAPAN, AND PERU**
+```{r}
+dream_data <- bind_rows(
+  us_fem, us_mal, peru_fem, peru_mal, 
+  jp_school_fem, jp_school_mal, jp_college
+)
+dream_data
+
+# Condense output showcasing sample of 1760 dream reports
+# Show an example of a dream report
+# 
+```
+
+
+# Check the new total - should be significantly higher!
+```{r}
+nrow(dream_data)
+```
+
+# Step 1: Feature Extraction - Count the "I" pronouns and total words for every dream.
+```{r}
+library(tidytext)
+library(dplyr)
+
+# 1. Define 'Agency' pronouns
+agency_words <- c("i", "me", "my", "mine", "myself")
+
+# 2. Process the data (Corrected Pipe)
+regression_data <- dream_data %>%
+  mutate(doc_id = row_number()) %>%
+  unnest_tokens(word, text) %>%
+  group_by(doc_id, culture, cohort) %>% # Removed the 'group_aggregate <-' typo
+  summarize(
+    total_words = n(),
+    i_count = sum(word %in% agency_words),
+    .groups = 'drop'
+  ) %>%
+  filter(total_words > 0)
+
+# Check the first few rows to make sure it worked
+head(regression_data)
+```
+
+# Step 2: Running Poisson Regression model
+```{r}
+# Ensure Culture is a factor with USA as the baseline
+regression_data$culture <- factor(regression_data$culture, levels = c("USA", "Japan", "Peru"))
+
+# Fit the Poisson Model
+# We use log(total_words) as the offset to model the RATE
+agency_model <- glm(i_count ~ culture + cohort, 
+                    family = "poisson", 
+                    offset = log(total_words), 
+                    data = regression_data).            
+# create i_percentage variable which = i_count / total_words
+
+# Check for Overdispersion (as mentioned in your Section 3.4)
+# If this value is much greater than 1, we should use 'quasipoisson'
+dispersion_ratio <- agency_model$deviance / agency_model$df.residual
+print(paste("Dispersion Ratio:", round(dispersion_ratio, 3)))
+
+# Summary of the results
+summary(agency_model)
+```
+
+# Reinforced Model: Quasi-Poisson
+```{r}
+# Fit the Quasi-Poisson Model to correct for Overdispersion (Ratio ~1.99)
+agency_model_robust <- glm(i_count ~ culture + cohort, 
+                           family = "quasipoisson", 
+                           offset = log(total_words), 
+                           data = regression_data)
+
+# Compare the new summary to the old one
+summary(agency_model_robust)
+```
+
+# Visualization: Coefficient Plot **UPDATE THIS TO INCLUDE THE INTERVAL DISPLAYING THE CONFIDENCE INTERVAL**
+# **ADD BOXPLOT (USE GGPLOT TO EITHER GROUP THE BOXPLOTS BY CULTURE OR BY SEX)** 
+```{r}
+library(broom)
+library(ggplot2)
+
+# Extract model results into a 'tidy' format
+model_outputs <- tidy(agency_model_robust, conf.int = TRUE) %>%
+  filter(term != "(Intercept)") # We don't need to plot the baseline intercept
+
+# Create the Coefficient Plot
+ggplot(model_outputs, aes(x = estimate, y = term)) +
+  geom_vline(xintercept = 0, color = "red", linetype = "dashed") + # The "No Difference" line
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2, color = "midnightblue") +
+  geom_point(size = 3, color = "midnightblue") +
+  labs(
+    title = "Cultural Influence on Dreamer Agency",
+    subtitle = "Coefficients represent log-rate of 'I' usage relative to USA Norms",
+    x = "Estimated Effect Size (Log Count)",
+    y = "Variable",
+    caption = "Error bars represent 95% Confidence Intervals (Quasi-Poisson)"
+  ) +
+  theme_minimal()
+```
+
+# Latent Dirichlet Allocation (LDA) Model
+```{r}
+library(quanteda)
+library(topicmodels)
+
+# 1. Create a corpus and tokenize (Removing punctuation/numbers/stopwords)
+# This retains metadata perfectly
+dream_tokens <- tokens(dream_data$text, 
+                       remove_punct = TRUE, 
+                       remove_numbers = TRUE, 
+                       remove_symbols = TRUE) %>%
+                tokens_tolower() %>%
+                tokens_remove(stopwords("english"))
+
+# 2. Create the Document-Feature Matrix (DFM)
+# We trim very rare words to improve LDA performance
+dream_dfm <- dfm(dream_tokens) %>%
+             dfm_trim(min_termfreq = 5) # Words must appear at least 5 times
+
+# 3. Convert to DTM for the 'topicmodels' package
+dtm <- convert(dream_dfm, to = "topicmodels")
+
+# 4. Run the LDA model (K=10 topics as planned)
+set.seed(123)
+lda_model <- LDA(dtm, k = 10, method = "VEM")
+
+# 5. Get top 10 terms to identify the 'Cultural Topics'
+top_terms <- terms(lda_model, 10)
+print(top_terms)
+```
+
+# Custom Stopword Removal and Redefined LDA
+```{r}
+library(quanteda)
+library(topicmodels)
+
+# 1. Define 'Oneirological' Stopwords to clear the "thematic fog"
+extra_stopwords <- c("dream", "dreamed", "dreaming", "remember", "thought", 
+                      "felt", "back", "one", "got", "get", "go", "going", 
+                      "went", "came", "started", "around", "seemed", "saw")
+
+# 2. Re-process the tokens with the new exclusions
+refined_tokens <- tokens(dream_data$text, 
+                         remove_punct = TRUE, 
+                         remove_numbers = TRUE, 
+                         remove_symbols = TRUE) %>%
+                  tokens_tolower() %>%
+                  tokens_remove(c(stopwords("english"), extra_stopwords))
+
+# 3. Create DFM and run LDA with K=15 for sharper resolution
+refined_dfm <- dfm(refined_tokens) %>% dfm_trim(min_termfreq = 5)
+dtm_refined <- convert(refined_dfm, to = "topicmodels")
+
+set.seed(123)
+lda_refined <- LDA(dtm_refined, k = 15, method = "VEM")
+
+# 4. View the new top 10 terms
+top_terms_refined <- terms(lda_refined, 10)
+print(top_terms_refined)
+```
+
+# Visualization: Cultural Probability Plot **REPLACE THIS WITH SOMETHING YOU CAN EASILY INTERPRET** 
+```{r}
+library(ggplot2)
+
+# 1. Clean the data to ensure R understands the categories
+plot_data <- refined_cultural_map %>%
+  mutate(
+    culture = as.factor(culture),
+    topic = as.factor(topic),
+    avg_gamma = as.numeric(avg_gamma)
+  )
+
+# 2. Generate the plot
+ggplot(plot_data, aes(x = topic, y = avg_gamma, fill = culture)) +
+  geom_col(position = position_dodge(preserve = "single")) + 
+  scale_fill_brewer(palette = "Set1") + # High-contrast colors for your report
+  labs(
+    title = "Thematic Concentration Across Cultures (K=15)",
+    subtitle = "Relative density of latent topics by cultural group",
+    x = "Latent Topic Number",
+    y = "Average Probability (Gamma)",
+    fill = "Culture"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(size = 10)
+  )
+```
+
+# Run Diagnostics 
+```{r}
+# Check column names and a few rows of data
+colnames(refined_cultural_map)
+head(refined_cultural_map)
+```

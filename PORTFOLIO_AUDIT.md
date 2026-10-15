@@ -1,3 +1,16 @@
+# October 2026 case-study update
+
+The historical audit below describes the earlier site revision. This update supersedes its retail and capstone status notes.
+
+- Feature order: Medicare, Quantium retail trial, CURE/Honors dream analysis, reporting automation. Student analysis moves to further statistical work alongside classification and ANOVA.
+- Added separate case-study pages with business/research questions, findings, implications, visual evidence, methods, downloadable artifacts, and visible evidence limits.
+- Reconstructed Quantium from the raw repository CSV pinned to `87efe6c`, explicitly differing from the missing original `QVI_data.csv`. Corrected control ranking, protected monthly measures from mutation, used scaled controls consistently, preserved signed differences, and removed unsupported uncertainty/revenue claims. Sales gaps: 26.2%, 13.2%, and 12.1%; these are descriptive point estimates.
+- Added three revised SVG figures, exact chart data, all monthly aggregates, complete match rankings, a product-scope sensitivity check, validation JSON, an executed independent Python verifier, and an unexecuted revised R companion. Original R/PNG exports remain separate.
+- Located and published the original May 2026 capstone paper and its four embedded figures. Replaced the former research-plan note with a completed capstone case study. More than 1,600 reports and the directional pronoun result are attributed to the paper; exact estimates and significance are not independently verified.
+- Inspected both supplied DreamSAT files: project totals are zero and project percentages contain division errors. They are not valid completed dashboards and are not used as results evidence.
+- Outstanding capstone evidence: frozen report-level corpus/derived features with cohort counts, final executable R Markdown, numeric model/interval/dispersion outputs, permutation results, and topic tables. The attached draft has unresolved acquisition, syntax, cohort, and topic-summary problems.
+- Static structure, links, data consistency, JavaScript syntax, and chart exports are checked with reproducible scripts. Full browser layout/interaction testing is unavailable in this session; no browser test is claimed.
+
 # Portfolio audit and refinements
 
 Reviewed October 12, 2026. Baseline commit: `a7b55408a38ec6577b29b97e2f6ada41df5e62f0`.
