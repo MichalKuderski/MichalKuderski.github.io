@@ -1,0 +1,115 @@
+---
+title: "Senior Capstone Project code"
+author: "Michal Kuderski"
+date: "2026-01-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dpi = 300)
+
+library(tidyverse)
+library(tidytext)
+library(broom)
+library(ggplot2)
+```
+
+# Data Preparation
+```{r}
+set.seed(42) # For reproducibility
+
+# Simulate 1600 total dream reports
+culture <- c(rep("USA", 1000), rep("Japan", 300), rep("Peru", 300))
+total_words <- rpois(1600, lambda = 150)
+
+# Simulate "I" counts (hypothesizing USA has a higher rate)
+i_count_usa <- rpois(1000, lambda = 0.05 * total_words[1:1000])
+i_count_jpn <- rpois(300, lambda = 0.02 * total_words[1001:1300])
+i_count_per <- rpois(300, lambda = 0.025 * total_words[1301:1600])
+
+dream_data <- data.frame(
+  ID = 1:1600,
+  Culture = factor(culture, levels = c("USA", "Japan", "Peru")),
+  Total_Words = total_words,
+  I_Count = c(i_count_usa, i_count_jpn, i_count_per)
+)
+```
+
+# Figure 1: Boxplot of Pronoun Usage
+```{r}
+ggplot(dream_data, aes(x = Culture, y = I_Count / Total_Words, fill = Culture)) +
+  geom_boxplot(alpha = 0.7, outlier.color = "red", outlier.alpha = 0.5) +
+  scale_fill_manual(values = c("USA" = "blue", "Japan" = "green", "Peru" = "yellow")) +
+  labs(title = "Distribution of 'I' Pronouns by Culture",
+       subtitle = "'I' pronoun count relative to total dream report count",
+       x = "Culture",
+       y = "'I' Count") +
+  theme_minimal(base_size = 6) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"))
+```
+
+# Figure 2: LDA (Latent Dirichlet Allocation) Topic Modeling - Dream Phenotypes
+```{r}
+# Simplified labels for non-stats audiences
+lda_mock <- data.frame(
+  Topic = rep(c("Academic", "Familial", "Nature & Travel"), each = 10),
+  Term = c("test", "school", "late", "professor", "late", "friends", "grade", "assignment", "class", "time",
+           "mother", "father", "sister", "brother", "aunt", "cousin", "uncle", "grandmother", "grandfather", "godmother",
+           "wilderness", "trees", "animals", "chasing", "ocean", "sky", "walking", "park", "fire", "nighttime"),
+  Beta = runif(15, 0.2, 0.9)
+)
+
+ggplot(lda_mock, aes(x = reorder_within(Term, Beta, Topic), y = Beta, fill = Topic)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~Topic, scales = "free_y") +
+  coord_flip() +
+  scale_x_reordered() +
+  
+  labs(title = "Dream Phenotype Differences",
+       x = "Words",
+       y = "Significance within Theme") +
+  theme_minimal(base_size = 5)
+```
+
+# Figure 3: Poisson Regression Residual Plot
+```{r}
+# Fit the Poisson model accounting for narrative length (offset)
+poisson_model <- glm(I_Count ~ Culture + offset(log(Total_Words)),
+                     family = poisson(link = "log"), data = dream_data)
+
+# Extract residuals and fitted values
+dream_data$residuals <- residuals(poisson_model, type = "deviance")
+dream_data$fitted <- fitted(poisson_model)
+
+ggplot(dream_data, aes(x = fitted, y = residuals, color = Culture)) +
+  geom_point(alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.15) +
+  geom_smooth(se = FALSE, color = "blue", method = "loess") +
+  scale_color_manual(values = c("USA" = "darkgreen", "Japan" = "red", "Peru" = "orange")) +
+  labs(title = "Poisson Regression Residual Plot",
+       x = "Fitted Values (Predicted 'I' Counts)",
+       y = "Deviance Residuals") +
+  theme_minimal(base_size = 7) +
+  theme(plot.title = element_text(face = "bold"))
+```
+
+# Figure 4: CI Bar Chart (Incidence Rate Ratios)
+```{r}
+# Tidy the model, exponentiate coefficients to get IRRs, and calculate 95% CIs
+model_tidied <- tidy(poisson_model, exponentiate = TRUE, conf.int = TRUE) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(term = str_replace(term, "Culture", ""))
+
+ggplot(model_tidied, aes(x = term, y = estimate, fill = term)) +
+  geom_col(alpha = 0.8, width = 0.5, color = "black") +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.15, size = 0.75) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "#cc0000", size = 0.5) +
+  scale_fill_manual(values = c("Japan" = "darkred", "Peru" = "darkblue")) +
+  labs(title = "CI Ratios of 'I' Usage vs. USA",
+       x = "Culture",
+       y = "IRR with 95% CI") +
+  theme_minimal(base_size = 6) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"))
+```

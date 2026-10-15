@@ -1,0 +1,46 @@
+{
+  "review": "Recovered-source review, October 2026",
+  "files": [
+    {
+      "filename": "Final Capstone Paper.pdf",
+      "sha256": "0f14fa078d53adcc56d343456d385f0c9ba5afce422733ed74d4c06e2b028ce9",
+      "review_role": "Paper with unverified empirical claims"
+    },
+    {
+      "filename": "USE_THIS_CODE.Rmd",
+      "sha256": "f33eee489de0caadc7a66b881e98e9920506fccd810f5f836d6ce0b512744800",
+      "review_role": "Synthetic data and mock-topic generator"
+    },
+    {
+      "filename": "Honors SCP.Rmd",
+      "sha256": "f42c303fc20cf21b8fee01d42f79cb1bae577e8abe724ecd7bb30acb12b0dee8",
+      "review_role": "Duplicate of Updated_Code.Rmd"
+    },
+    {
+      "filename": "SCHP Proposal.pdf",
+      "sha256": "de8c8587120a50d4babfbeeb30609ebc914e775df194a68b99c47de720e7a07d",
+      "review_role": "Research plan, not results"
+    },
+    {
+      "filename": "Quantium Code(1).Rmd",
+      "sha256": "4797779b67411bdd119be05bdb1f1b65c78b698a9f717b1a2b72054e637f96dc",
+      "review_role": "Task 1 source"
+    },
+    {
+      "filename": "Quantium-Code.pdf",
+      "sha256": "b47c00215f653ed0799b10e42823aa7cff497b5b7ebf52e6a402ee9c8a6e4e67",
+      "review_role": "Executed Task 1, private customer identifiers"
+    },
+    {
+      "filename": "Complete_Quantium_code(1).Rmd",
+      "sha256": "a7334bb9c818954c42e537e4166625f879850c2975cbc1d713ed4a4050ddbf1a",
+      "review_role": "Duplicate of Complete_Quantium_code.Rmd"
+    },
+    {
+      "filename": "Complete R Code #2.pdf",
+      "sha256": "aa550e1be3dbfd96e6732522a8058b48843ff20a8faa339390528d81302d1558",
+      "review_role": "Executed Task 2, broken summary and unverified effect claims"
+    }
+  ],
+  "raw_customer_pdfs_republished": false
+}

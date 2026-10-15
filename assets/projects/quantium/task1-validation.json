@@ -1,0 +1,40 @@
+{
+  "source_commit": "87efe6c29ea423acb4184d5eaf2b83275bcb10d8",
+  "transactions_sha256": "061af4913d91cd1b33197e2b5d1ec0bd58b69db93816e805f42e0a8ee7815b70",
+  "customers_sha256": "55a73ebd5e4c08da7607184143efe9990cc1db00bbde5c260cbaab88a7ea4e44",
+  "raw_line_items": 264836,
+  "salsa_line_items_removed": 18094,
+  "bulk_customer_count": 1,
+  "bulk_line_items_removed": 2,
+  "historical_task1_line_items": 246740,
+  "historical_task1_sales": 1805177.7,
+  "exact_duplicate_rows_removed": 1,
+  "clean_chip_line_items": 246739,
+  "clean_chip_sales": 1805171.7,
+  "distinct_customers": 71287,
+  "segments": 21,
+  "customer_key_unique": true,
+  "unmatched_customer_rows": 0,
+  "join_row_inflation": 0,
+  "top3_pdf_amounts_reconciled": true,
+  "top3_sales_share_pct": 24.907043468496653,
+  "chip_scope_revised_controls": [
+    233,
+    155,
+    237
+  ],
+  "balanced_chip_stores": 259,
+  "original_task2_controls_reported": [
+    50,
+    114,
+    123
+  ],
+  "original_task2_summary_controls": [
+    null,
+    null,
+    123
+  ],
+  "original_trial_effects": "UNVERIFIED: no defensible original uplift estimates or significance outputs",
+  "reconstructed_comparisons": "Reproduced diagnostic point estimates under revised matching; not historical trial effects",
+  "publication": "Aggregate outputs only; Task 1 PDF contains customer identifiers. Original Quantium PDFs are not republished."
+}

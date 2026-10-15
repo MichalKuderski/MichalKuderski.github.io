@@ -76,11 +76,13 @@ def independent_csv_check(path, monthly):
     from datetime import datetime, timedelta
     from decimal import Decimal
     with path.open(newline='') as handle:
+        bulk_customers = {r['LYLTY_CARD_NBR'] for r in csv.DictReader(handle) if int(r['PROD_QTY']) == 200}
+    with path.open(newline='') as handle:
         for raw in csv.DictReader(handle):
             key = tuple(raw.values())
             if key in seen: continue
             seen.add(key)
-            if int(raw['LYLTY_CARD_NBR']) == 226000: continue
+            if raw['LYLTY_CARD_NBR'] in bulk_customers: continue
             month = (datetime(1899, 12, 30) + timedelta(days=int(raw['DATE']))).strftime('%Y-%m')
             bucket = totals[(int(raw['STORE_NBR']), month)]
             bucket[0] += int(Decimal(raw['TOT_SALES']) * 100)
@@ -142,7 +144,8 @@ def main():
     assert raw.columns.tolist() == ['DATE','STORE_NBR','LYLTY_CARD_NBR','TXN_ID','PROD_NBR','PROD_NAME','PROD_QTY','TOT_SALES']
     assert not raw.isna().any().any()
     deduped = raw.drop_duplicates()
-    clean = deduped[deduped.LYLTY_CARD_NBR != 226000].copy()
+    bulk_customers = deduped.loc[deduped.PROD_QTY == 200, 'LYLTY_CARD_NBR'].unique()
+    clean = deduped[~deduped.LYLTY_CARD_NBR.isin(bulk_customers)].copy()
     clean['month'] = pd.to_datetime(clean.DATE, unit='D', origin='1899-12-30').dt.strftime('%Y-%m')
     assert sorted(clean.month.unique()) == pd.period_range('2018-07', '2019-06', freq='M').astype(str).tolist()
     monthly = summarize(clean)
@@ -167,12 +170,14 @@ def main():
     audit = dict(source_commit='87efe6c29ea423acb4184d5eaf2b83275bcb10d8',
                  source_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
                  source_rows=len(raw), exact_duplicate_rows_removed=len(raw)-len(deduped),
-                 outlier_customer=226000, outlier_customer_rows_removed=len(deduped)-len(clean),
+                 outlier_customer_count=len(bulk_customers), outlier_customer_rows_removed=len(deduped)-len(clean),
                  cleaned_line_items=len(clean), distinct_store_transaction_keys=len(clean[['STORE_NBR','TXN_ID']].drop_duplicates()),
                  unique_customers=int(clean.LYLTY_CARD_NBR.nunique()), stores=int(clean.STORE_NBR.nunique()),
                  balanced_stores=eligible, pre_trial_months=7, trial_months=3,
                  cleaned_total_sales=float(clean.TOT_SALES.sum()),
                  independent_integer_cent_aggregation='PASS', results=results, sensitivity_excluding_salsa=sensitivity,
+                 scope='Legacy all-product diagnostic, including salsa; retired as headline project evidence after Task 1 recovery.',
+                 original_trial_effects='UNVERIFIED; this reconstruction does not validate the historical trial effects.',
                  inference='Descriptive point estimates; no validated significance or causal interpretation.',
                  executed='Python independent reconstruction; companion R code not executed in this environment.')
     (OUT/'validation.json').write_text(json.dumps(audit,indent=2)+'\n')

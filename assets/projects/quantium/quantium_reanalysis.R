@@ -11,7 +11,8 @@ d <- unique(fread(args[1]))
 required <- c("DATE", "STORE_NBR", "LYLTY_CARD_NBR", "TXN_ID", "PROD_NBR", "PROD_NAME", "PROD_QTY", "TOT_SALES")
 stopifnot(identical(names(d), required), !anyNA(d))
 # Two 200-unit purchases belong to this single outlier customer.
-d <- d[LYLTY_CARD_NBR != 226000]
+bulk_customers <- d[PROD_QTY == 200, unique(LYLTY_CARD_NBR)]
+d <- d[!LYLTY_CARD_NBR %in% bulk_customers]
 d[, month := format(as.Date(DATE, origin = "1899-12-30"), "%Y-%m")]
 m <- d[, .(sales = sum(TOT_SALES), customers = uniqueN(LYLTY_CARD_NBR),
            transactions = uniqueN(TXN_ID), units = sum(PROD_QTY)), by = .(STORE_NBR, month)]

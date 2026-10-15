@@ -1,53 +1,37 @@
-# Dreaming in Different Cultures — evidence review
+# Dreaming in Different Cultures — revised provenance review
 
-Assessment: **Share with caveats** as an academic capstone with reported findings. Full independent reproducibility remains incomplete.
+**Empirical conclusions: unverified / needs revision. Research design and a clearly labeled synthetic demonstration can be shared.**
 
-## Controlling source
+This review supersedes the earlier treatment of the paper's directional cultural patterns as findings supported by its figures. The recovered `USE_THIS_CODE.Rmd` makes the simulation provenance materially relevant. The portfolio no longer presents a measured cultural difference, a verified empirical corpus size, fitted empirical LDA topics, or empirical model intervals.
 
-Michal Kuderski, *Do Dreams Reflect Our Culture? A Statistical Analysis on Dream Narratives*, NIU University Honors Program, May 2026. The paper describes more than 1,600 DreamBank reports from American, Japanese, and Peruvian college-student samples. Its four embedded figures are extracted unchanged for the case study. The draft R Markdown is dated January 14, 2026 and is treated as method-development evidence, not as the executed final analysis.
+## What the recovered code establishes
 
-## Claims and evidence
+- `set.seed(42)` precedes generation of **1,600 synthetic rows**, assigned group labels of USA (1,000), Japan (300), and Peru (300).
+- Report lengths are generated with `rpois(1600, lambda = 150)`.
+- First-person counts are generated with **imposed** expected rates per word of 0.05, 0.02, and 0.025. Greater USA-label counts are therefore built into the simulation; they are not an empirical discovery.
+- A Poisson GLM with a log-word-count offset is fitted to these synthetic counts. Its intervals and residuals concern the simulation, not observed DreamBank students.
+- `lda_mock` manually lists topic terms and supplies `runif()` weights. It does **not** fit LDA. Thirty term rows receive a recycled vector of 15 random weights, and “late” appears twice in one theme. These weights are neither p-values nor fitted topic probabilities.
+- No empirical narrative import, observed feature table, permutation implementation, or fitted topic output appears in that script.
 
-| Claim | Support | Publication treatment |
-| --- | --- | --- |
-| More than 1,600 reports | Paper methodology | Reported corpus size; not independently recounted |
-| Three cultural groups | Paper and draft series labels | USA, Japan, and Peru retained |
-| Greater relative first-person usage in the USA sample | Paper results, boxplot, and model figure | Directional reported association; no exact effect sizes or verified significance |
-| Academic, Familial, Nature & Travel themes | Paper results and keyword figure | Interpretive themes; no culture prevalence or p-values inferred |
-| Poisson and quasi-Poisson models with word-count exposure | Poisson in paper; both model specifications in draft | Explain method; final specification and outputs remain unverified |
-| Permutation testing | Paper statement only | Reported method; code, scheme, and output unavailable |
-| Culture determines subconscious experience | Strong interpretation in source paper | Not adopted; observational narrative features cannot establish it |
-| Predict culture from narratives | Paper future-work proposal | Not presented as a trained or validated predictive model |
+## Paper and figure status
 
-## Figure integrity
+`Final Capstone Paper.pdf` is a nine-page submitted-paper artifact with the same narrative findings and figure types as the previously reviewed Word paper. It adds no numerical empirical coefficient table, observed cohort-count table, permutation results, or fitted-topic table.
 
-- Boxplot: the source subtitle describes pronoun count relative to dream report count, while the scale appears proportional and the draft uses words as exposure. The draft counts I/me/my/mine/myself, not I alone. Do not transcribe exact medians or rates without resolving definitions.
-- Rate-ratio plot: values lie below the USA reference of 1. Exact estimates, standard errors, interval limits, and the final fit are unavailable. Do not read precise numerical coefficients or p-values from pixels.
-- Keyword chart: “Significance within Theme” lacks a documented numeric definition. The chart has no culture-specific prevalence series. It cannot establish between-culture thematic significance.
-- Residual plot: a smooth line near zero does not establish model adequacy. Dispersion, dependence between reports, influential observations, and specification require additional checks.
+The four figure titles, color choices, group ordering, and qualitative rate-ratio pattern correspond to the recovered simulation generator. This is strong provenance evidence for treating the figures as **simulation-associated illustrations**, not empirical support. The exact R-generated pixels and coefficients have not been regenerated here; no claim of exact execution identity is made.
 
-## Draft-code reproducibility issues
+All four retained figures are displayed only within an explicitly labeled illustrative section. Cultural interpretations from the paper are not adopted as verified findings. The final paper and proposal are summarized by role: a reporting artifact with unverified empirical claims, and a research plan, respectively. Newly supplied full PDFs are not republished.
 
-1. `get_dreams()` is called but never defined. Two random pulls are combined without a sampling seed or archived manifest.
-2. Deduplication happens within each sampled series; there is no documented global duplicate or repeated-dreamer assessment.
-3. The draft includes Japanese school-child series despite a note requiring a college-only cohort. Adding a cohort term does not remove those records or make culture and cohort fully separable.
-4. A trailing period after the Poisson `glm()` call is an R syntax error.
-5. `refined_cultural_map` is referenced but not constructed. Topic-term and document-topic outputs are not supplied.
-6. The draft explores K=10 and K=15 LDA models. The three thematic labels in the paper are not evidence that the final model had exactly three topics.
-7. The paper mentions I-versus-We comparisons and permutation validation, but the draft contains only first-person-singular counts and no permutation test.
-8. The approximate dispersion ratio in a code comment is not a saved, verifiable diagnostic output.
+## Duplicate and draft findings
 
-## DreamSAT workbook inspection
+`Honors SCP.Rmd` is byte-identical to the earlier `Updated_Code.Rmd`; it supplies no additional independent evidence. The draft calls undefined `get_dreams()`, has a trailing-period syntax error after a model fit, retains Japanese school-child cohorts despite a college-only note, and references an undefined topic-summary object. It explores K=10 and K=15 LDA models but supplies neither final fitted outputs nor permutation results.
 
-`DreamSAT_summary.xlsx`: `Totals!A2` = 0; `Percents!J4` = 0; project percentages contain `#DIV/0!`. `DreamSAT spreadsheet.xlsm`: `Totals!A2` = 0, only a placeholder NEW-0001 entry, and project percentage/AF-square cells contain `#DIV/0!`. Male/female norm columns are prepopulated reference values, not measured results for the capstone. Neither file validates the corpus, cultural comparison, or model. The macro-enabled workbook was read as data only; macros were not executed. These workbooks are not promoted as completed dashboards.
+Both supplied DreamSAT workbooks have zero project totals and division errors. Their prepopulated norm columns are reference material, not results for these cultural cohorts.
 
-## What to supply next
+## Requirements for an empirical case study
 
-- A frozen, permitted corpus or derived report-level table: report ID, source series, culture, college-student eligibility, dreamer ID where available, word count, and pronoun count. Include row counts before and after exclusions and duplicate handling, by culture.
-- The final executable R Markdown, actual package/session versions, sampling seed or full retrieval manifest, and the saved final outputs.
-- Numeric coefficients, standard errors, confidence limits, dispersion statistics, final model family, permutation design/results, and topic-term/document-topic tables.
-- Any final poster that reconciles the paper with those outputs; useful, but it does not replace the underlying data or model tables.
+1. A frozen, permitted corpus or derived report-level feature table containing source/report IDs, culture, college-student eligibility, dreamer ID where available, word count, pronoun counts, and before/after exclusion totals by group. Raw narratives and a whole `.Rhistory` file are not required for this review.
+2. Executable empirical preparation/model code or the frozen input and final run, with documented versions and actual fitted model specification.
+3. Numeric empirical estimates, standard errors/intervals, dispersion diagnostics, and a defensible resampling design/output that accounts for dependence where relevant.
+4. Fitted topic-term/document-topic outputs and a reconciled mapping from empirical outputs to the paper's figures and statements.
 
-## Required interpretation limits
-
-Archived observational samples are not nationally representative. Consider translation, era, collection methods, cohort and gender composition, report length, and multiple reports per dreamer. Resampling must respect exchangeability/dependence; unequal sample sizes alone do not justify unrestricted label permutation. Pronoun counts measure language, not a person's individualism or subconscious state. Findings should remain group-level exploratory associations.
+Until these are available, the verified contribution is the documented research question and synthetic statistical workflow. Simulation inputs must never be described as observed cohort counts, and synthetic estimates must not be used to infer real cultural or psychological differences.

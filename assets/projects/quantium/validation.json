@@ -3,7 +3,7 @@
   "source_sha256": "061af4913d91cd1b33197e2b5d1ec0bd58b69db93816e805f42e0a8ee7815b70",
   "source_rows": 264836,
   "exact_duplicate_rows_removed": 1,
-  "outlier_customer": 226000,
+  "outlier_customer_count": 1,
   "outlier_customer_rows_removed": 2,
   "cleaned_line_items": 264833,
   "distinct_store_transaction_keys": 263125,
@@ -114,6 +114,8 @@
       "spend_per_customer_gap_pct": 6.682680950516096
     }
   ],
+  "scope": "Legacy all-product diagnostic, including salsa; retired as headline project evidence after Task 1 recovery.",
+  "original_trial_effects": "UNVERIFIED; this reconstruction does not validate the historical trial effects.",
   "inference": "Descriptive point estimates; no validated significance or causal interpretation.",
   "executed": "Python independent reconstruction; companion R code not executed in this environment."
 }

@@ -1,0 +1,557 @@
+---
+title: "Quantium VI R code"
+author: "Michal Kuderski"
+date: "2025-05-01"
+output: pdf_document
+---
+
+# Quantium Virtual Internship - Retail Strategy and Analytics - Task 1
+# =============================================================================
+# This code provides a comprehensive analysis of chip purchasing behavior
+# for a supermarket category manager. The analysis focuses on:
+#  1. Data cleaning and preparation
+#  2. Exploratory data analysis
+#  3. Customer segmentation analysis
+#  4. Deep dive into key customer segments
+#  5. Commercial insights and recommendations
+# =============================================================================
+
+# Setup: Load Required Libraries
+```{r}
+# Install packages if you haven't already
+if (!require("data.table")) install.packages("data.table")
+if (!require("ggplot2")) install.packages("ggplot2")
+if (!require("ggmosaic")) install.packages("ggmosaic")
+if (!require("readr")) install.packages("readr")
+
+# Load libraries
+library(data.table)
+library(ggplot2)
+library(ggmosaic)
+library(readr)
+library(stringr)
+
+# Set plot theme for consistent, professional visualizations
+theme_set(theme_bw())
+theme_update(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+# Data Import: Load Transaction and Customer Data
+```{r}
+filePath <- "./data/"
+
+# Read in the data
+# Using fread from data.table for faster processing of large files
+transactionData <- fread(paste0(filePath, "QVI_transaction_data.csv"))
+customerData <- fread(paste0(filePath, "QVI_purchase_behaviour.csv"))
+```
+
+# Exploratory Data Analysis: Transaction Data
+```{r}
+# Initial examination of the transaction data structure
+str(transactionData)
+
+# View first few rows
+head(transactionData)
+
+# Generate summary statistics for each column
+summary_trans <- summary(transactionData)
+print(summary_trans)
+
+# BUSINESS INSIGHT: Understanding the basic structure and quality of our transaction 
+# data is critical before diving into analysis
+```
+
+# Data Cleaning: Date Format
+```{r}
+# Convert DATE column from integer to Date format
+# CSV and Excel integer dates begin on 30 Dec 1899
+transactionData$DATE <- as.Date(transactionData$DATE, origin = "1899-12-30")
+
+# Check the result - print first few dates to confirm conversion
+head(transactionData$DATE)
+
+# Visualize transaction distribution by month to see seasonality
+monthly_transactions <- transactionData[, .(COUNT = .N), by = .(MONTH = format(DATE, "%Y-%m"))]
+
+ggplot(monthly_transactions, aes(x = MONTH, y = COUNT)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Transaction Volume by Month",
+       x = "Month",
+       y = "Number of Transactions") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# BUSINESS INSIGHT: Understanding seasonal patterns helps the category
+# manager plan promotions and inventory levels appropriately
+```
+
+# Data Cleaning: Examining Product Names
+```{r}
+# Check product names to ensure we're looking at chips
+unique_products <- unique(transactionData$PROD_NAME)
+head(unique_products, 20)
+
+# Split product names into words to analyze what products they are
+productWords <- data.table(unlist(strsplit(unique(transactionData$PROD_NAME), " ")))
+setnames(productWords, "words")
+
+# Remove digits to focus on product type descriptors
+productWords <- productWords[!grepl("[0-9]", words)]
+# Remove special characters
+productWords <- productWords[!grepl("[[:punct:]]", words)]
+
+# Count frequency of words to understand product composition
+wordCounts <- productWords[, .(Frequency = .N), by = words]
+wordCounts <- wordCounts[order(-Frequency)]
+
+# Visualize top 15 most common words in product names
+ggplot(wordCounts[1:15], aes(x = reorder(words, -Frequency), y = Frequency)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+  labs(title = "Most Common Words in Product Names",
+       x = "Word",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# BUSINESS INSIGHT: Understanding product naming conventions helps us
+# correctly identify and categorize chip products
+```
+
+# Data Cleaning: Removing Non-Chip Products
+```{r}
+# Identify salsa products that need to be removed
+transactionData[, SALSA := grepl("salsa", tolower(PROD_NAME))]
+
+# Count how many salsa products we're removing
+salsa_count <- sum(transactionData$SALSA)
+cat("Removing", salsa_count, "salsa products from analysis\n")
+
+# Remove salsa products
+transactionData <- transactionData[SALSA == FALSE, ][, SALSA := NULL]
+
+# BUSINESS INSIGHT: Focusing only on chip products ensures our analysis
+# is relevant to the category manager's specific portfolio
+
+```
+
+# Data Cleaning: Checking for Outliers
+```{r}
+# Look for unusual quantities
+qty_distribution <- transactionData[, .N, by = PROD_QTY][order(-PROD_QTY)]
+print(qty_distribution)
+
+# Visualize quantity distribution (excluding extreme outliers for better visualization)
+ggplot(qty_distribution[PROD_QTY < 10], aes(x = as.factor(PROD_QTY), y = N)) +
+  geom_bar(stat = "identity", fill = "orange") +
+  labs(title = "Distribution of Product Quantities",
+       x = "Product Quantity",
+       y = "Number of Transactions") +
+  theme(axis.text.x = element_text(angle = 0))
+
+# Investigate transactions with extremely high quantities
+highQtyTransactions <- transactionData[PROD_QTY == 200]
+unique_high_qty_customers <- unique(highQtyTransactions$LYLTY_CARD_NBR)
+
+cat("Found", length(unique_high_qty_customers), "customer(s) with unusually high purchase quantities\n")
+
+# Check other transactions by this customer
+customer_transactions <- transactionData[LYLTY_CARD_NBR == unique_high_qty_customers[1]]
+print(customer_transactions)
+
+# Remove this commercial customer as they're not representative of typical retail behavior
+transactionData <- transactionData[LYLTY_CARD_NBR != unique_high_qty_customers[1]]
+
+# Verify removal - check max quantity now
+max_qty_after <- max(transactionData$PROD_QTY)
+cat("After removing outlier, maximum quantity is now:", max_qty_after, "\n")
+
+# BUSINESS INSIGHT: Removing commercial/bulk buyers helps us focus on 
+# typical retail consumer behavior, which is the primary interest for category management
+```
+
+# Data Cleaning: Checking for Missing Data
+```{r}
+# Count transactions by date
+transactions_by_day <- transactionData[, .(Transactions = .N), by = DATE]
+
+# Create complete date sequence to identify any missing dates
+all_dates <- data.table(DATE = seq(min(transactionData$DATE), max(transactionData$DATE), by = "day"))
+
+# Join to find missing dates
+transactions_by_day <- merge(all_dates, transactions_by_day, by = "DATE", all.x = TRUE)
+transactions_by_day[is.na(Transactions), Transactions := 0]
+
+# Identify dates with zero transactions
+missing_dates <- transactions_by_day[Transactions == 0]
+cat("Found", nrow(missing_dates), "dates with zero transactions\n")
+print(missing_dates)
+
+# Plot transactions over time to visualize patterns and gaps
+ggplot(transactions_by_day, aes(x = DATE, y = Transactions)) +
+  geom_line(color = "blue") +
+  geom_point(data = missing_dates, aes(x = DATE, y = Transactions), color = "red", size = 2) +
+  labs(title = "Daily Transaction Volume",
+       subtitle = "Red dots indicate days with zero transactions",
+       x = "Date", 
+       y = "Number of Transactions") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+# Zoom in on December to examine holiday patterns
+dec_data <- transactions_by_day[format(DATE, "%m") == "12"]
+ggplot(dec_data, aes(x = DATE, y = Transactions)) +
+  geom_line(color = "darkgreen") +
+  geom_point(size = 2) +
+  labs(title = "December Transaction Volume",
+       subtitle = "Examining holiday season patterns",
+       x = "Date", 
+       y = "Number of Transactions") +
+  scale_x_date(date_breaks = "1 day", date_labels = "%d %b") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+# BUSINESS INSIGHT: Understanding transaction patterns around holidays and 
+# special events helps with inventory planning and promotional timing
+```
+
+# Feature Engineering: Extract Pack Size
+```{r}
+# Extract pack size from product name using parse_number
+transactionData[, PACK_SIZE := parse_number(PROD_NAME)]
+
+# Check distribution of pack sizes
+pack_size_distribution <- transactionData[, .(Count = .N), by = PACK_SIZE][order(PACK_SIZE)]
+print(pack_size_distribution)
+
+# Visualize pack size distribution
+ggplot(transactionData, aes(x = factor(PACK_SIZE))) +
+  geom_bar(fill = "purple", alpha = 0.8) +
+  labs(title = "Distribution of Pack Sizes",
+       x = "Pack Size (g)",
+       y = "Number of Transactions") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# BUSINESS INSIGHT: Understanding pack size preferences helps with
+# assortment planning and identifying potential gaps in the product range
+```
+
+# Feature Engineering: Extract Brand Names
+```{r}
+# Extract brand name (first word in product name)
+transactionData[, BRAND := word(PROD_NAME, 1)]
+
+# Check brand distribution
+brandCounts <- transactionData[, .(Transactions = .N), by = BRAND][order(-Transactions)]
+print(brandCounts)
+
+# Visualize top 10 brands by transaction volume
+ggplot(brandCounts[1:10], aes(x = reorder(BRAND, -Transactions), y = Transactions)) +
+  geom_bar(stat = "identity", fill = "darkblue") +
+  labs(title = "Top 10 Chip Brands by Transaction Volume",
+       x = "Brand",
+       y = "Number of Transactions") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Clean brand names (combine similar brands)
+# Identify potential brand name inconsistencies
+transactionData[BRAND == "RED", BRAND := "RRD"]
+transactionData[BRAND == "SNBTS", BRAND := "SUNBITES"]
+transactionData[BRAND == "INFZNS", BRAND := "INFUZIONS"]
+transactionData[BRAND == "WW", BRAND := "WOOLWORTHS"]
+transactionData[BRAND == "SMITH", BRAND := "SMITHS"]
+# Add more brand cleaning as needed based on your data
+
+# Verify brand cleaning by checking updated distribution
+brandCounts_after <- transactionData[, .(Transactions = .N), by = BRAND][order(-Transactions)]
+head(brandCounts_after, 10)
+
+# BUSINESS INSIGHT: Brand analysis helps identify market leaders and 
+# potential opportunities for category expansion or consolidation
+```
+
+# Data Integration: Mergine Transaction and Customer Data
+```{r}
+# Examine customer data before merging
+head(customerData)
+summary(customerData)
+
+# Check customer segments distribution
+customer_segments <- customerData[, .N, by = .(LIFESTAGE, PREMIUM_CUSTOMER)][order(-N)]
+print(customer_segments)
+
+# Visualize customer segment distribution
+ggplot(customer_segments, aes(x = LIFESTAGE, y = N, fill = PREMIUM_CUSTOMER)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Distribution of Customers by Segment",
+       x = "Lifestage",
+       y = "Number of Customers") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set1")
+
+# Merge transaction and customer data
+data <- merge(transactionData, customerData, by = "LYLTY_CARD_NBR", all.x = TRUE)
+
+# Check if all transactions have matched customers
+missing_customer_info <- sum(is.na(data$LIFESTAGE))
+cat("Transactions without customer information:", missing_customer_info, "\n")
+
+# Check if merge was successful
+cat("Original transaction rows:", nrow(transactionData), "\n")
+cat("Rows after merging:", nrow(data), "\n")
+
+# BUSINESS INSIGHT: Integrating transaction and demographic data allows us
+# to understand purchasing behavior in the context of customer segments
+```
+
+# Customer Segment Analysis: Total Sales
+```{r}
+# Calculate total sales by LIFESTAGE and PREMIUM_CUSTOMER
+sales_by_segment <- data[, .(
+  TotalSales = sum(TOT_SALES),
+  Percentage = sum(TOT_SALES) / sum(data$TOT_SALES) * 100
+), by = .(LIFESTAGE, PREMIUM_CUSTOMER)]
+
+# Sort to find highest sales segments
+sales_by_segment <- sales_by_segment[order(-TotalSales)]
+print(sales_by_segment)
+
+# Visualize sales by segment
+ggplot(sales_by_segment, aes(x = LIFESTAGE, y = TotalSales, fill = PREMIUM_CUSTOMER)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Total Chip Sales by Customer Segment",
+       subtitle = "Analyzing which segments contribute most to sales",
+       x = "Lifestage", 
+       y = "Total Sales ($)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set1")
+
+# BUSINESS INSIGHT: Identifying high-value segments helps with targeted 
+# marketing and promotional strategies to maximize ROI
+```
+
+# Customer Segment Analysis: Customer Count
+```{r}
+# Count unique customers by segment
+customers_by_segment <- data[, .(
+  UniqueCustomers = uniqueN(LYLTY_CARD_NBR),
+  Percentage = uniqueN(LYLTY_CARD_NBR) / uniqueN(data$LYLTY_CARD_NBR) * 100
+), by = .(LIFESTAGE, PREMIUM_CUSTOMER)]
+
+# Sort by customer count
+customers_by_segment <- customers_by_segment[order(-UniqueCustomers)]
+print(customers_by_segment)
+
+# Visualize customer count by segment
+ggplot(customers_by_segment, aes(x = LIFESTAGE, y = UniqueCustomers, fill = PREMIUM_CUSTOMER)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Number of Chip Customers by Segment",
+       subtitle = "Analyzing customer base composition",
+       x = "Lifestage", 
+       y = "Number of Customers") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set1")
+
+# BUSINESS INSIGHT: Understanding customer count helps identify if sales are driven
+# by many customers buying small amounts or fewer customers buying large amounts
+```
+
+# Customer Segment Analysis: Units Per Customer
+```{r}
+# Calculate units per customer by segment
+units_per_customer <- data[, .(
+  TotalUnits = sum(PROD_QTY),
+  UniqueCustomers = uniqueN(LYLTY_CARD_NBR)
+), by = .(LIFESTAGE, PREMIUM_CUSTOMER)]
+
+units_per_customer[, UnitsPerCustomer := TotalUnits / UniqueCustomers]
+units_per_customer <- units_per_customer[order(-UnitsPerCustomer)]
+print(units_per_customer)
+
+# Visualize units per customer
+ggplot(units_per_customer, aes(x = LIFESTAGE, y = UnitsPerCustomer, fill = PREMIUM_CUSTOMER)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Average Units Purchased per Customer",
+       subtitle = "Analyzing purchase volume by segment",
+       x = "Lifestage", 
+       y = "Avg Units per Customer") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set1")
+
+# BUSINESS INSIGHT: Understanding purchase volume helps identify opportunities
+# to increase basket size within specific customer segments
+```
+
+# Customer Segment Analysis: Average Price Per Unit
+```{r}
+# Calculate average price per unit by segment
+price_per_unit <- data[, .(
+  TotalSales = sum(TOT_SALES),
+  TotalUnits = sum(PROD_QTY)
+), by = .(LIFESTAGE, PREMIUM_CUSTOMER)]
+
+price_per_unit[, AvgPricePerUnit := TotalSales / TotalUnits]
+price_per_unit <- price_per_unit[order(-AvgPricePerUnit)]
+print(price_per_unit)
+
+# Visualize average price per unit
+ggplot(price_per_unit, aes(x = LIFESTAGE, y = AvgPricePerUnit, fill = PREMIUM_CUSTOMER)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Average Price Paid per Unit by Segment",
+       subtitle = "Analyzing price sensitivity across segments",
+       x = "Lifestage", 
+       y = "Average Price per Unit ($)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set1")
+
+# BUSINESS INSIGHT: Price sensitivity analysis helps with pricing strategy
+# and identifying segments where premium products might perform well
+```
+
+# Deep Dive: Key Segment Analysis
+```{r}
+# Based on previous analysis, let's focus on Mainstream - Young Singles/Couples
+# (This would be determined from your actual findings)
+
+# Identify our target segment
+target_segment <- data[LIFESTAGE == "YOUNG SINGLES/COUPLES" & PREMIUM_CUSTOMER == "Mainstream"]
+other_segments <- data[!(LIFESTAGE == "YOUNG SINGLES/COUPLES" & PREMIUM_CUSTOMER == "Mainstream")]
+
+# ---- DEEP DIVE: BRAND PREFERENCE ANALYSIS ----
+# Compare brand preferences of target segment vs. others
+target_brand_pref <- target_segment[, .(TargetCount = .N), by = BRAND]
+target_brand_pref[, TargetPct := TargetCount / sum(TargetCount)]
+
+other_brand_pref <- other_segments[, .(OtherCount = .N), by = BRAND]
+other_brand_pref[, OtherPct := OtherCount / sum(OtherCount)]
+
+brand_comparison <- merge(target_brand_pref, other_brand_pref, by = "BRAND")
+brand_comparison[, AffinityIndex := TargetPct / OtherPct]
+brand_comparison <- brand_comparison[order(-AffinityIndex)]
+
+# Filter for meaningful results (brands with substantial presence)
+significant_brands <- brand_comparison[TargetCount > 10 & OtherCount > 10]
+print(significant_brands)
+
+# Visualize brand preferences
+ggplot(significant_brands[1:10], aes(x = reorder(BRAND, -AffinityIndex), y = AffinityIndex)) +
+  geom_bar(stat = "identity", fill = "darkblue") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +
+  labs(title = "Brand Preference: Mainstream Young Singles/Couples",
+       subtitle = "Affinity index: values > 1 indicate stronger preference than other segments",
+       x = "Brand", 
+       y = "Affinity Index") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# BUSINESS INSIGHT: Brand affinity analysis helps identify which brands 
+# resonate most with key customer segments for targeted promotions
+```
+
+# Deep Dive: Pack Size Preference Analysis
+```{r}
+# Compare pack size preferences
+target_size_pref <- target_segment[, .(TargetCount = .N), by = PACK_SIZE]
+target_size_pref[, TargetPct := TargetCount / sum(TargetCount)]
+
+other_size_pref <- other_segments[, .(OtherCount = .N), by = PACK_SIZE]
+other_size_pref[, OtherPct := OtherCount / sum(OtherCount)]
+
+size_comparison <- merge(target_size_pref, other_size_pref, by = "PACK_SIZE")
+size_comparison[, AffinityIndex := TargetPct / OtherPct]
+size_comparison <- size_comparison[order(-AffinityIndex)]
+
+# Visualize pack size preferences
+ggplot(size_comparison, aes(x = as.factor(PACK_SIZE), y = AffinityIndex)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +
+  labs(title = "Pack Size Preference: Mainstream Young Singles/Couples",
+       subtitle = "Affinity index: values > 1 indicate stronger preference than other segments",
+       x = "Pack Size (g)", 
+       y = "Affinity Index") +
+  theme(axis.text.x = element_text(angle = 0))
+
+# BUSINESS INSIGHT: Pack size preference helps optimize product assortment
+# and identify potential new product development opportunities
+```
+
+# Statistical Testing: Price Sensitivity 
+```{r}
+# Test if price difference between segments is statistically significant
+# Example: Compare mainstream vs. budget/premium for young and midage singles/couples
+
+segment_of_interest <- data[LIFESTAGE %in% c("YOUNG SINGLES/COUPLES", "MIDAGE SINGLES/COUPLES")]
+
+mainstream <- segment_of_interest[PREMIUM_CUSTOMER == "Mainstream", 
+                                 .(LYLTY_CARD_NBR, PROD_QTY, TOT_SALES)]
+mainstream[, Price := TOT_SALES / PROD_QTY]
+
+other <- segment_of_interest[PREMIUM_CUSTOMER %in% c("Budget", "Premium"), 
+                            .(LYLTY_CARD_NBR, PROD_QTY, TOT_SALES)]
+other[, Price := TOT_SALES / PROD_QTY]
+
+# Prepare data for visualization
+price_comparison <- data.table(
+  Segment = c(rep("Mainstream", length(mainstream$Price)), 
+              rep("Budget/Premium", length(other$Price))),
+  Price = c(mainstream$Price, other$Price)
+)
+
+# Visualize price distribution
+ggplot(price_comparison, aes(x = Segment, y = Price)) +
+  geom_boxplot(fill = c("coral", "skyblue")) +
+  labs(title = "Price Comparison: Mainstream vs. Budget/Premium",
+       subtitle = "Young and Midage Singles/Couples segments",
+       x = "Customer Segment", 
+       y = "Price per Unit ($)")
+
+# Perform t-test
+t_test_result <- t.test(mainstream$Price, other$Price)
+print(t_test_result)
+
+cat("\nStatistical test results:\n")
+cat("Mean price for Mainstream customers:", mean(mainstream$Price), "\n")
+cat("Mean price for Budget/Premium customers:", mean(other$Price), "\n")
+cat("p-value:", t_test_result$p.value, "\n")
+if (t_test_result$p.value < 0.05) {
+  cat("The price difference is statistically significant (p < 0.05)\n")
+} else {
+  cat("The price difference is not statistically significant (p >= 0.05)\n")
+}
+
+# BUSINESS INSIGHT: Statistical validation ensures that observed differences
+# in purchasing behavior are meaningful and not due to random chance
+```
+
+# Save Results
+```{r}
+# Save combined data for Task 2 or future analysis
+fwrite(data, paste0(filePath,"QVI_data.csv"))
+```
+
+# Summary of Key Findings
+```{r}
+# Print key metrics and insights summary
+cat("\n=== QUANTIUM CHIPS ANALYSIS: KEY FINDINGS ===\n\n")
+
+# Top sales segments
+cat("TOP 3 CUSTOMER SEGMENTS BY SALES:\n")
+print(head(sales_by_segment, 3))
+
+# Top segments by units per customer
+cat("\nTOP 3 SEGMENTS BY UNITS PER CUSTOMER:\n")
+print(head(units_per_customer, 3))
+
+# Price sensitivity insights
+cat("\nPRICE SENSITIVITY BY SEGMENT (TOP 3 HIGHEST PAYING):\n")
+print(head(price_per_unit, 3))
+
+# Target segment brand preferences
+cat("\nTOP BRAND AFFINITIES FOR MAINSTREAM YOUNG SINGLES/COUPLES:\n")
+print(head(brand_comparison[order(-AffinityIndex)], 5))
+
+cat("\n=== COMMERCIAL RECOMMENDATIONS ===\n")
+cat("1. Focus marketing efforts on Mainstream Young Singles/Couples segment\n")
+cat("2. Highlight preferred brands in promotional materials\n")
+cat("3. Ensure optimal shelf placement for preferred pack sizes\n")
+cat("4. Consider price-point optimization based on segment price sensitivity\n")
+cat("5. Develop targeted promotions for high-affinity brand-segment combinations\n")
+```

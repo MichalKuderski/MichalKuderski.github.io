@@ -1,3 +1,15 @@
+# Recovered-source correction — October 2026
+
+This section supersedes the older case-study evidence status below.
+
+- CURE: the recovered USE_THIS_CODE.Rmd generates 1,600 synthetic rows, imposes group rates, and creates mock topic weights. Withdrew the directional empirical cultural claim and verified-corpus implication from the home page and case study. The page now documents research design and simulation; all four retained figures are labeled simulation-associated illustrations, not empirical support. Final paper and proposal are distinguished from executed empirical evidence through reviewed summaries; the newly supplied full PDFs are not published.
+- Quantium: the recovered executed Task 1 PDF supports aggregate segment results that were reconciled to pinned CSVs. Published corrected chip-only segment totals after one exact-duplicate removal. The top three printed sales amounts match; the correction reduces total sales by 6.00.
+- Retired 26.2%, 13.2%, and 12.1% as headline project results. These were revised all-product comparisons, not verified historical trial effects. Chip-only comparisons remain a separately labeled diagnostic reconstruction; original trial uplift/significance remains unverified.
+- The executed Task 2 PDF prints controls 50/114/123, then NA/NA/123 in its final summary with hard-coded significance descriptions. It does not resolve the original analytical defects.
+- Honors SCP.Rmd duplicates Updated_Code.Rmd exactly; Complete_Quantium_code(1).Rmd duplicates the original Task 2 code exactly. File hashes and review roles are recorded in source-review.json.
+- The Task 1 PDF exposes individual customer identifiers. Original Quantium PDFs are not published; aggregate exports and path-sanitized R source are provided instead. No raw dream narratives or .Rhistory content was added.
+- Original R sources and their executed PDFs were inspected; no R execution is claimed in this environment. Reconciliation and diagnostic generation ran independently in Python.
+
 # October 2026 case-study update
 
 The historical audit below describes the earlier site revision. This update supersedes its retail and capstone status notes.

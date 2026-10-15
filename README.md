@@ -7,8 +7,8 @@ A static portfolio presenting spending analysis, retail trials, reporting automa
 ## Featured case studies
 
 1. **Medicare spending analysis** — SQL/PostgreSQL, weighted metrics, and an Excel reporting workbook. The full case study remains on the home page.
-2. **Quantium retail trial evaluation** — `projects/quantium.html`. Original R simulation plus an explicitly documented independent reconstruction from pinned raw transactions. Includes signed sales/customer comparisons, monthly data, matching scores, sensitivity results, corrected charts, and source code. These are descriptive comparisons, not validated causal uplift or annual revenue projections.
-3. **Dreaming in Different Cultures** — `projects/dreaming.html`. NIU CURE/Honors capstone, with the original paper, four extracted figures, method explanation, and an evidence review. Findings are labeled as reported in the paper; the corpus, final executable analysis, and numeric model outputs are needed for full independent reproduction.
+2. **Quantium customer and trial analysis** — `projects/quantium.html`. Reconciled Task 1 customer-segment sales lead the case study. Original Task 2 effects and significance remain unverified. Revised chip-only store comparisons are separately labeled diagnostic reconstructions. Public outputs contain aggregate data and code; customer-level PDFs are not republished.
+3. **Dreaming in Different Cultures** — `projects/dreaming.html`. NIU Honors capstone materials, now classified as research design and a synthetic count-model demonstration. Recovered source imposes group rates and creates mock topics. Four source figures are labeled simulation-associated illustrations; no empirical cultural difference, observed cohort size, or fitted LDA output is claimed as verified.
 
 Reporting automation follows the three featured projects; student performance, classification, and experimental-design coursework provide additional depth.
 
@@ -23,9 +23,17 @@ python scripts/verify_case_studies.py
 node --check js/portfolio.js
 ```
 
-The retail generator requires pandas, numpy, and matplotlib. It does not install packages or export customer-level records. A separate CSV parser using integer-cent arithmetic checks monthly aggregates. The revised R companion is supplied for review but was not executed in the editing environment. The site itself needs no Python or R runtime.
+For the recovered-source reconciliation, also run:
 
-Original draft charts/code remain distinct from the revised snapshot. Empty DreamSAT workbooks are not presented as completed dashboards. See each project's `evidence-notes.md` for assumptions, limitations, and the outstanding files that would strengthen reproducibility.
+```bash
+python scripts/review_quantium.py /path/to/QVI_transaction_data.csv /path/to/QVI_purchase_behaviour.csv
+```
+
+The original all-product verifier regenerates a legacy diagnostic snapshot; it does not validate historical trial effects. The recovered-source script generates the corrected chip-only segments and separately labeled trial diagnostics.
+
+The retail generators require pandas, numpy, and matplotlib. It does not install packages or export customer-level records. A separate CSV parser using integer-cent arithmetic checks monthly aggregates. The revised R companion is supplied for review but was not executed in the editing environment. The site itself needs no Python or R runtime.
+
+Newly recovered materials and exact duplicates are inventoried by SHA-256 in `assets/projects/source-review.json`. The final CURE PDF was reviewed as a reporting artifact with unverified empirical claims; newly supplied full PDFs are not republished. Original draft charts/code remain distinct from revised diagnostics. Empty DreamSAT workbooks are not presented as completed dashboards. See each project's `evidence-notes.md` for assumptions, limitations, and the outstanding files that would strengthen reproducibility.
 
 ## Files
 
