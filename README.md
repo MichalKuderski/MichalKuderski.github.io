@@ -76,3 +76,5 @@ Retail is a virtual job simulation; automation is a small demonstration; student
 - Email: mkuderski21@gmail.com
 - LinkedIn: https://www.linkedin.com/in/michal-kuderski-4b10a8230/
 - GitHub: https://github.com/MichalKuderski
+
+Original R Markdown source keeps its existing whitespace for provenance. The `.nojekyll` setting preserves its YAML headers in public downloads.
