@@ -43,3 +43,7 @@
 /* GraphOS follows the existing portfolio card and case-study system. */
 .project-graphos{grid-column:1/-1}
 @media(min-width:801px){.project-graphos{display:grid;grid-template-columns:1fr 1.2fr}.project-graphos .project-visual{border-bottom:0;border-right:1px solid var(--line)}}
+
+/* GridCast uses the existing wide project-card layout. */
+.project-gridcast{grid-column:1/-1}
+@media(min-width:801px){.project-gridcast{display:grid;grid-template-columns:1fr 1.2fr}.project-gridcast .project-visual{border-bottom:0;border-right:1px solid var(--line)}}
