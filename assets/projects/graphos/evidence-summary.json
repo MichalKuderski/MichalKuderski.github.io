@@ -1,0 +1,84 @@
+{
+  "project": "GraphOS | Validated Retail Analytics Demo",
+  "as_of": "2026-11-03",
+  "artifact_type": "Selected summary of retained local acceptance records, not a new execution or full audit",
+  "status": "Completed local demo; production readiness remains open",
+  "development": "AI-assisted",
+  "data": "Northstar Direct fictional retail benchmark; not real client data",
+  "benchmark": {
+    "dated_records": 30035,
+    "duplicate_order_key_records": 35,
+    "month_count": 20,
+    "group_count": 60,
+    "first_month": "2025-01",
+    "last_month": "2026-08",
+    "latest_month_rows": [
+      {
+        "cancelled_records": 59,
+        "channel": "Marketplace",
+        "month": "2026-08",
+        "share_tenths_percent": 284,
+        "small_group": false,
+        "source_records": 208,
+        "unknown_status_records": 0
+      },
+      {
+        "cancelled_records": 107,
+        "channel": "Mobile",
+        "month": "2026-08",
+        "share_tenths_percent": 222,
+        "small_group": false,
+        "source_records": 483,
+        "unknown_status_records": 0
+      },
+      {
+        "cancelled_records": 209,
+        "channel": "Web",
+        "month": "2026-08",
+        "share_tenths_percent": 261,
+        "small_group": false,
+        "source_records": 801,
+        "unknown_status_records": 0
+      }
+    ]
+  },
+  "metric_definition": "cancelled source order records / all source order records within channel and month; original duplicate-key records retained",
+  "activation_checked_at_utc": "2026-11-03T02:56:58.232429+00:00",
+  "activation_checks": {
+    "archive_no_append_during_reopen_or_restart": "PASS",
+    "independent_all_60_groups_counts_shares_dates_quality": "PASS",
+    "native_iab_390_and_1280_no_page_overflow": "PASS",
+    "old_and_new_receipts_reopened_after_restart": "PASS",
+    "separate_new_restore_copy_exact_hash_and_read_only_semantics": "PASS"
+  },
+  "later_offline_candidate": {
+    "checked_at_utc": "2026-11-03T17:43:17.446808+00:00",
+    "python_tests_passed": 150,
+    "javascript_checks_passed": 41,
+    "activation": "Pending at retained checkpoint; offline checks do not certify earlier running version"
+  },
+  "optional_model_review": "One narrow aggregate-only Analyst/Reviewer pair completed November 2; not broad autonomous-platform validation",
+  "interface_capture": {
+    "source": "ux_v2_desktop.jpg",
+    "date": "2026-11-02",
+    "scope": "Historical small synthetic fixture, separate from benchmark and later saved-history/cancellation workflow",
+    "sha256": "bcf4d60effec3dbfbd3844aa97bf39f7445394c27fdb216aa82aad20a64b6099"
+  },
+  "limits": [
+    "Fictional source-record analysis; not unique-order rates, causal effects, profit, or real client outcomes.",
+    "Native keyboard/screen-reader and broader user-workflow acceptance remain incomplete.",
+    "No public live app, production deployment, or general autonomous analytics platform is claimed.",
+    "Original reports and app source remain local; this summary contains selected report fields and hashes."
+  ],
+  "source_reports": {
+    "cancellation_activation_v1_acceptance.json": {
+      "sha256": "24eb858c68540e80581e745a87ed124cef483bc7c78f884e2758adf20a4f1192"
+    },
+    "release_binding_v1_acceptance.json": {
+      "sha256": "6d12f504614929b2ab3795daf00af00c129285fb61f2e94d7d063b706a59600a"
+    },
+    "openai_live_acceptance.json": {
+      "sha256": "a953e51cba1b9d7e9e224e76d0ac16e2b813995064949fba3919bf63ad937892"
+    }
+  }
+}
