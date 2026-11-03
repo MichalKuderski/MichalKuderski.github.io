@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medicare | SQL and Excel Spending Analysis | Michal Kuderski</title>
+<meta name="description" content="CMS Medicare spending analysis using PostgreSQL, analytical SQL, weighted payment metrics, and an Excel dashboard across 2,460 published provider-service records.">
+<link rel="canonical" href="https://michalkuderski.github.io/projects/medicare.html">
+<meta name="theme-color" content="#094d43"><meta property="og:type" content="article">
+<meta property="og:title" content="Medicare | SQL and Excel Spending Analysis">
+<meta property="og:description" content="PostgreSQL, CTEs, window functions, weighted metrics, and an Excel dashboard explain payment concentration and utilization in a defined CMS cohort.">
+<meta property="og:url" content="https://michalkuderski.github.io/projects/medicare.html">
+<meta property="og:image" content="https://michalkuderski.github.io/og-image.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/portfolio.css?v=04040fbc03b6"><link rel="stylesheet" href="../css/case-studies.css?v=20261103-medicare">
+<script src="../js/portfolio.js?v=b4ac1541f8aa" defer></script>
+</head><body><a class="skip" href="#main">Skip to content</a>
+<header class="masthead"><div class="wrap masthead-inner">
+<a class="identity" href="../index.html" aria-label="Michal Kuderski, portfolio home"><span class="monogram" aria-hidden="true">MK</span><span><span class="identity-name">Michal Kuderski</span><span class="identity-role">DATA ANALYST · B.S. STATISTICS</span></span></a>
+<button class="menu-toggle" type="button" aria-controls="navigation" aria-expanded="false">Menu</button>
+<nav class="nav" id="navigation" aria-label="Main navigation"><a href="../index.html#work">All projects</a><a href="#case">Findings</a><a href="#sql">SQL</a><a href="../index.html#contact">Contact</a><a class="nav-resume" href="../index.html#resume">Resume ↗</a></nav>
+</div></header><main class="wrap" id="main" tabindex="-1">
+<div class="case-hero"><a class="breadcrumb" href="../index.html#work">← Selected work</a><p class="eyebrow">Healthcare analytics · Independent portfolio project</p><h1>Medicare | SQL and Excel Spending Analysis</h1><p class="case-deck">A PostgreSQL analysis and Excel dashboard that explain payment concentration and utilization while keeping the source data’s grain and metric definitions explicit.</p><div class="case-meta"><span>SQL · PostgreSQL · Excel · Weighted KPIs</span><span>CMS · Illinois psychiatry providers · 2023 data</span></div><div class="cta"><a class="btn btn-primary" href="#case">Explore the findings ↓</a><a class="btn btn-quiet" href="#sql">Inspect the SQL ↓</a></div></div>
+<p class="case-note">These published CMS records summarize provider × procedure × place-of-service activity; they are not individual claims or unique patients. Findings apply to the defined Illinois psychiatry cohort.</p>
+<section class="section" id="case" tabindex="-1" aria-labelledby="case-title">
+    <div class="section-head"><div><p class="eyebrow">01 / Findings and interpretation</p><h2 id="case-title">Follow the spending.<br>Question the denominator.</h2></div><p>Medicare Provider Spending Analysis<br><span class="meta-line">CMS · Illinois psychiatry · 2023 data<br>PostgreSQL · SQL · Excel</span></p></div>
+    <div class="case-summary"><div><h3>Which services drive payment,<br>and what deserves a closer look?</h3><p>I organized <strong class="num">2,460 published provider–procedure–place-of-service records</strong> into three related tables, wrote analytical SQL, and built a seven-sheet Excel workbook.</p><p>The aim was to explain spending concentration and provider variation with consistent metrics, then identify questions that the source alone cannot answer.</p></div><dl class="findings"><div><dt>Finding</dt><dd><strong>CPT 99214 accounts for $5.65M, or 20.8% of payment.</strong> The top five codes account for 55.6% of the cohort’s Medicare payment.</dd></div><div><dt>Interpretation</dt><dd>Submitted charges, allowed amounts, and Medicare payments answer different questions. Payment per service unit is a more defensible primary metric here than payment per summed beneficiary count.</dd></div><div><dt>Next decision</dt><dd>Examine high-volume codes and procedure mix first. Treat provider and city differences as leads for investigation before making staffing or access recommendations.</dd></div></dl></div>
+    <div class="metrics" aria-label="Verified workbook summary"><div class="metric"><strong class="num">$27.2M</strong><span>MEDICARE PAYMENT</span></div><div class="metric"><strong class="num">$35.6M</strong><span>ALLOWED AMOUNT</span></div><div class="metric"><strong class="num">$51.03</strong><span>PAYMENT PER SERVICE UNIT</span></div><div class="metric"><strong class="num">532,675</strong><span>PUBLISHED SERVICE UNITS</span></div></div>
+    <div class="chart-grid">
+      <figure class="chart"><figcaption><h3>Five codes account for 55.6% of payment.</h3><p class="chart-meta">Medicare payment · bars relative to the largest code</p></figcaption><div class="bars" role="img" aria-label="Top codes by payment: 99214, 5.65 million dollars; 99213, 3.07 million; 99232, 2.69 million; K1034, 1.93 million; 90833, 1.77 million."><div class="bar-row"><div class="bar-label"><span>99214 <span class="muted">· Established outpatient visit</span></span><strong class="num">$5.6M</strong></div><div class="bar-track"><div class="bar-fill" style="width:100.00%"></div></div></div><div class="bar-row"><div class="bar-label"><span>99213 <span class="muted">· Established outpatient visit</span></span><strong class="num">$3.1M</strong></div><div class="bar-track"><div class="bar-fill" style="width:54.38%"></div></div></div><div class="bar-row"><div class="bar-label"><span>99232 <span class="muted">· Subsequent hospital care</span></span><strong class="num">$2.7M</strong></div><div class="bar-track"><div class="bar-fill" style="width:47.65%"></div></div></div><div class="bar-row"><div class="bar-label"><span>K1034 <span class="muted">· COVID-19 test provision</span></span><strong class="num">$1.9M</strong></div><div class="bar-track"><div class="bar-fill" style="width:34.25%"></div></div></div><div class="bar-row"><div class="bar-label"><span>90833 <span class="muted">· Psychotherapy with E&amp;M</span></span><strong class="num">$1.8M</strong></div><div class="bar-track"><div class="bar-fill" style="width:31.29%"></div></div></div></div><p class="chart-note">K1034 is a COVID-19 test code. Its 164,437 service units came from one provider. Procedure mix matters: a service unit is not necessarily a patient visit.</p><details class="table-view"><summary>View exact values</summary><div class="table-scroll" tabindex="0" aria-label="Procedure payment table, scrollable"><table><caption>Source: workbook → Procedure Analysis. Share uses total cohort Medicare payment.</caption><thead><tr><th scope="col">Code</th><th scope="col">Service</th><th scope="col" class="num">Payment</th><th scope="col" class="num">Share</th></tr></thead><tbody><tr><th scope="row">99214</th><td>Established outpatient visit</td><td class="num">$5,645,811.88</td><td class="num">20.8%</td></tr><tr><th scope="row">99213</th><td>Established outpatient visit</td><td class="num">$3,070,132.38</td><td class="num">11.3%</td></tr><tr><th scope="row">99232</th><td>Subsequent hospital care</td><td class="num">$2,690,318.19</td><td class="num">9.9%</td></tr><tr><th scope="row">K1034</th><td>COVID-19 test provision</td><td class="num">$1,933,779.12</td><td class="num">7.1%</td></tr><tr><th scope="row">90833</th><td>Psychotherapy with E&amp;M</td><td class="num">$1,766,533.38</td><td class="num">6.5%</td></tr></tbody></table></div></details></figure>
+      <figure class="chart"><figcaption><h3>Three measures. Three different meanings.</h3><p class="chart-meta">Reimbursement amounts · bars scaled to submitted charges</p></figcaption><div class="funnel" role="img" aria-label="Submitted charges: 70.7 million dollars. Allowed amount: 35.6 million. Medicare payment: 27.2 million."><div class="funnel-row"><span>Submitted</span><div class="bar-track"><div class="bar-fill secondary" style="width:100%"></div></div><b class="num">$70.7M</b></div><div class="funnel-row"><span>Allowed</span><div class="bar-track"><div class="bar-fill secondary" style="width:50.35%"></div></div><b class="num">$35.6M</b></div><div class="funnel-row"><span>Medicare paid</span><div class="bar-track"><div class="bar-fill" style="width:38.45%"></div></div><b class="num">$27.2M</b></div></div><p class="chart-note">Medicare payment is 38.4% of submitted charges. The remaining charge amount is not automatically unpaid revenue or a loss; Medicare payment alone does not represent all provider receipts.</p><details class="table-view"><summary>View exact values</summary><div class="table-scroll" tabindex="0" aria-label="Reimbursement table, scrollable"><table><caption>Source: workbook → Specialty Summary. Totals reconstructed from published average amounts.</caption><thead><tr><th scope="col">Measure</th><th scope="col" class="num">Amount</th></tr></thead><tbody><tr><th scope="row">Submitted charges</th><td class="num">$70,702,611.15</td></tr><tr><th scope="row">Allowed amount</th><td class="num">$35,599,258.32</td></tr><tr><th scope="row">Medicare payment</th><td class="num">$27,182,697.04</td></tr></tbody></table></div></details></figure>
+    </div>
+    <figure class="chart" style="margin-top:22px"><figcaption><h3>Telephone-coded share varies sharply by provider city.</h3><p class="chart-meta">99441–99443 service units ÷ all published service units in that city · 0–100% scale</p></figcaption><div class="bars" role="img" aria-label="Telephone-coded share of published service units: Elk Grove Village 76.7 percent with 1 provider; DeKalb 52.3 with 1; Plainfield 25.6 with 5; Morris 21.4 with 2; Pekin 18.8 with 1; Chicago 1.9 with 188."><div class="bar-row"><div class="bar-label"><span>Elk Grove Village <span class="muted">· 1 provider</span></span><strong class="num">76.7%</strong></div><div class="bar-track"><div class="bar-fill " style="width:76.7%"></div></div></div><div class="bar-row"><div class="bar-label"><span>DeKalb <span class="muted">· 1 provider</span></span><strong class="num">52.3%</strong></div><div class="bar-track"><div class="bar-fill " style="width:52.3%"></div></div></div><div class="bar-row"><div class="bar-label"><span>Plainfield <span class="muted">· 5 providers</span></span><strong class="num">25.6%</strong></div><div class="bar-track"><div class="bar-fill " style="width:25.6%"></div></div></div><div class="bar-row"><div class="bar-label"><span>Morris <span class="muted">· 2 providers</span></span><strong class="num">21.4%</strong></div><div class="bar-track"><div class="bar-fill " style="width:21.4%"></div></div></div><div class="bar-row"><div class="bar-label"><span>Pekin <span class="muted">· 1 provider</span></span><strong class="num">18.8%</strong></div><div class="bar-track"><div class="bar-fill " style="width:18.8%"></div></div></div><div class="bar-row"><div class="bar-label"><span>Chicago <span class="muted">· 188 providers</span></span><strong class="num">1.9%</strong></div><div class="bar-track"><div class="bar-fill secondary" style="width:1.9%"></div></div></div></div><p class="chart-note">This describes billing-provider cities in a Medicare psychiatry cohort. It does not measure all psychiatric care, all telehealth, patient residence, or transportation barriers. Elk Grove Village and DeKalb each have one provider in this cohort, so their percentages need particular care.</p><details class="table-view"><summary>Inspect denominators & provider counts</summary><div class="table-scroll" tabindex="0" aria-label="Telephone share table, scrollable"><table><caption>Source: Telehealth Access and Provider Outliers sheets. “Phone providers” counts providers billing the selected telephone codes.</caption><thead><tr><th scope="col">Provider city</th><th scope="col" class="num">All providers</th><th scope="col" class="num">Phone providers</th><th scope="col" class="num">Phone units</th><th scope="col" class="num">All units</th><th scope="col" class="num">Share</th></tr></thead><tbody><tr><th scope="row">Elk Grove Village</th><td class="num">1</td><td class="num">1</td><td class="num">368</td><td class="num">480</td><td class="num">76.7%</td></tr><tr><th scope="row">DeKalb</th><td class="num">1</td><td class="num">1</td><td class="num">262</td><td class="num">501</td><td class="num">52.3%</td></tr><tr><th scope="row">Plainfield</th><td class="num">5</td><td class="num">1</td><td class="num">239</td><td class="num">934</td><td class="num">25.6%</td></tr><tr><th scope="row">Morris</th><td class="num">2</td><td class="num">1</td><td class="num">146</td><td class="num">682</td><td class="num">21.4%</td></tr><tr><th scope="row">Pekin</th><td class="num">1</td><td class="num">1</td><td class="num">219</td><td class="num">1,168</td><td class="num">18.8%</td></tr><tr><th scope="row">Chicago</th><td class="num">188</td><td class="num">22</td><td class="num">1,409</td><td class="num">73,531</td><td class="num">1.9%</td></tr></tbody></table></div></details></figure>
+    <div class="caveat"><strong>What the denominator changes:</strong> CMS beneficiary counts are distinct within each published row. Summing them can count the same person more than once. I use payment per service unit in the headline KPIs and keep beneficiary-based outputs labeled as approximate. Higher payment per unit also does not establish lower efficiency or worse care.</div>
+    <details class="methods"><summary>Explore the method & limitations</summary><div class="methods-grid"><div><h3>Model the source grain</h3><p>One row per provider NPI × HCPCS code × place of service. Providers and procedure codes are reference tables; utilization contains volumes and payment measures.</p><div class="method-schema" aria-label="Providers and procedure codes join to utilization"><span>providers (NPI)</span><span>utilization (fact)</span><span>hcpcs_codes (code)</span></div></div><div><h3>Weight the metrics correctly</h3><p>Estimated payment = sum of average payment × service units. Payment per unit = total payment ÷ total units. This differs from an unweighted average of provider averages.</p></div><div><h3>Screen variation, then investigate</h3><p>CTEs and window functions compare providers within specialty. Distribution summaries are descriptive screens; procedure mix, volume, and case mix need further analysis before labeling a provider inefficient.</p></div><div><h3>Separate patterns from causes</h3><p>The file cannot establish access barriers, clinical outcomes, appointment availability, or why telephone use differs. Provider geography is not patient geography. Follow-up needs new data and a defined comparison.</p></div></div></details>
+    <div class="source-links"><a class="btn btn-primary" href="../Medicare_Psychiatry_Analytics_IL_2023.xlsx" download>Excel workbook <span aria-hidden="true">↓</span></a><a class="btn" href="../medicare_analytics.sql" download>Complete SQL <span aria-hidden="true">↓</span></a><a class="btn btn-quiet" href="../executive_summary.pdf" target="_blank" rel="noopener">Original summary PDF <span aria-hidden="true">↗</span></a><a class="btn btn-quiet" href="https://github.com/MichalKuderski/MichalKuderski.github.io/blob/main/medicare_analytics.sql" target="_blank" rel="noopener">SQL on GitHub <span aria-hidden="true">↗</span></a></div>
+    <p class="source-note">Source: <a href="https://data.cms.gov/provider-summary-by-type-of-service/medicare-physician-other-practitioners/medicare-physician-other-practitioners-by-provider-and-service" target="_blank" rel="noopener">CMS Medicare Physician & Other Practitioners — by Provider and Service</a>, 2023. Charts are static snapshots verified against the original workbook. The original workbook and PDF are retained; the SQL download includes a revised per-service comparison, the city-share query, and validation checks. It has not been rerun against the original source CSV as part of this website revision.</p>
+  </section>
+
+  <section class="section" id="sql" tabindex="-1" aria-labelledby="sql-title"><div class="section-head"><div><p class="eyebrow">02 / Inspect the SQL</p><h2 id="sql-title">The reasoning is in the code.</h2></div><p>Readable PostgreSQL, with the method beside it. Expand an example, wrap long lines, or copy the query to inspect it yourself.</p></div><div class="sql-layout"><aside class="sql-aside"><h3>From joins<br>to useful comparisons.</h3><p>These examples come directly from the downloadable script. They demonstrate weighted aggregation, window functions, conditional counts, denominator control, and checks at the expected data grain.</p><p>The script sets up a dedicated project schema. Review it and use a project database; its rebuild section replaces the project’s tables.</p><a class="btn btn-quiet" href="../medicare_analytics.sql" download>Download full script ↓</a></aside><div><details class="sql-example" open>
+      <summary>Provider outlier screening<small>CTEs · weighted mean · RANK() window function</small></summary>
+      <div class="code-toolbar"><span>PostgreSQL · 77 lines</span><div class="js-only">
+        <button class="code-button" type="button" data-wrap="pre-provider" aria-pressed="false" aria-label="Wrap lines in Provider outlier screening">Wrap lines</button>
+        <button class="code-button" type="button" data-copy="code-provider" data-name="Provider outlier screening" aria-label="Copy Provider outlier screening SQL">Copy SQL</button>
+      </div></div>
+      <pre id="pre-provider" tabindex="0" aria-label="Provider outlier screening SQL, scrollable"><code id="code-provider"><span class="sql-keyword">WITH</span> provider_metrics <span class="sql-keyword">AS</span> (
+    <span class="sql-comment">-- Individual provider-level payment per service</span>
+    <span class="sql-keyword">SELECT</span>
+        p.npi,
+        p.first_name,
+        p.last_org_name,
+        p.credentials,
+        p.city,
+        p.provider_type                                                 <span class="sql-keyword">AS</span> specialty,
+        <span class="sql-keyword">SUM</span>(u.tot_srvcs)                                                <span class="sql-keyword">AS</span> total_services,
+        <span class="sql-keyword">SUM</span>(u.tot_benes)                                                <span class="sql-keyword">AS</span> sum_benes_approx,
+        <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">SUM</span>(u.avg_medicare_payment * u.tot_srvcs), 2)             <span class="sql-keyword">AS</span> total_payment,
+
+        <span class="sql-comment">-- Provider&#x27;s own payment per service</span>
+        <span class="sql-keyword">ROUND</span>(
+            <span class="sql-keyword">SUM</span>(u.avg_medicare_payment * u.tot_srvcs) /
+            <span class="sql-keyword">NULLIF</span>(<span class="sql-keyword">SUM</span>(u.tot_srvcs), 0),
+        2)                                                              <span class="sql-keyword">AS</span> provider_pay_per_svc,
+
+        <span class="sql-comment">-- Specialty average payment per service (window function over specialty group)</span>
+        <span class="sql-keyword">ROUND</span>(
+            <span class="sql-keyword">SUM</span>(<span class="sql-keyword">SUM</span>(u.avg_medicare_payment * u.tot_srvcs)) <span class="sql-keyword">OVER</span> (<span class="sql-keyword">PARTITION</span> <span class="sql-keyword">BY</span> p.provider_type) /
+            <span class="sql-keyword">NULLIF</span>(<span class="sql-keyword">SUM</span>(<span class="sql-keyword">SUM</span>(u.tot_srvcs)) <span class="sql-keyword">OVER</span> (<span class="sql-keyword">PARTITION</span> <span class="sql-keyword">BY</span> p.provider_type), 0),
+        2)                                                              <span class="sql-keyword">AS</span> specialty_avg_pay_per_svc
+
+    <span class="sql-keyword">FROM</span> utilization u
+    <span class="sql-keyword">JOIN</span> providers p <span class="sql-keyword">ON</span> u.npi = p.npi
+    <span class="sql-keyword">GROUP</span> <span class="sql-keyword">BY</span> p.npi, p.first_name, p.last_org_name, p.credentials, p.city, p.provider_type
+),
+
+<span class="sql-comment">-- Add deviation from specialty mean and rank within specialty</span>
+ranked_providers <span class="sql-keyword">AS</span> (
+    <span class="sql-keyword">SELECT</span>
+        *,
+        <span class="sql-comment">-- Absolute dollar deviation from specialty average</span>
+        <span class="sql-keyword">ROUND</span>(provider_pay_per_svc - specialty_avg_pay_per_svc, 2)     <span class="sql-keyword">AS</span> deviation_from_avg,
+
+        <span class="sql-comment">-- Percent deviation from specialty average</span>
+        <span class="sql-keyword">ROUND</span>(
+            (provider_pay_per_svc - specialty_avg_pay_per_svc) /
+            <span class="sql-keyword">NULLIF</span>(specialty_avg_pay_per_svc, 0) * 100,
+        1)                                                              <span class="sql-keyword">AS</span> pct_deviation,
+
+        <span class="sql-comment">-- Rank within specialty (highest payment per service = rank 1)</span>
+        <span class="sql-keyword">RANK</span>() <span class="sql-keyword">OVER</span> (
+            <span class="sql-keyword">PARTITION</span> <span class="sql-keyword">BY</span> specialty
+            <span class="sql-keyword">ORDER</span> <span class="sql-keyword">BY</span> provider_pay_per_svc <span class="sql-keyword">DESC</span>
+        )                                                               <span class="sql-keyword">AS</span> specialty_rank
+    <span class="sql-keyword">FROM</span> provider_metrics
+)
+
+<span class="sql-comment">-- Final output: filter to providers who deviate &gt; 50% from specialty mean</span>
+<span class="sql-comment">-- and have at least 10 services (low-volume providers can appear as outliers by chance)</span>
+<span class="sql-keyword">SELECT</span>
+    specialty,
+    specialty_rank,
+    npi,
+    CONCAT(first_name, <span class="sql-string">&#x27; &#x27;</span>, last_org_name)  <span class="sql-keyword">AS</span> provider_name,
+    credentials,
+    city,
+    total_services,
+    sum_benes_approx,
+    total_payment,
+    provider_pay_per_svc,
+    specialty_avg_pay_per_svc,
+    deviation_from_avg,
+    pct_deviation,
+    <span class="sql-keyword">CASE</span>
+        <span class="sql-keyword">WHEN</span> pct_deviation &gt; 50  <span class="sql-keyword">THEN</span> <span class="sql-string">&#x27;HIGH OUTLIER&#x27;</span>
+        <span class="sql-keyword">WHEN</span> pct_deviation &lt; -50 <span class="sql-keyword">THEN</span> <span class="sql-string">&#x27;LOW OUTLIER&#x27;</span>
+        <span class="sql-keyword">ELSE</span> <span class="sql-string">&#x27;Within Range&#x27;</span>
+    <span class="sql-keyword">END</span>                                     <span class="sql-keyword">AS</span> outlier_flag
+
+<span class="sql-keyword">FROM</span> ranked_providers
+<span class="sql-keyword">WHERE</span> <span class="sql-keyword">ABS</span>(pct_deviation) &gt; 50
+  <span class="sql-keyword">AND</span> total_services &gt;= 10
+<span class="sql-keyword">ORDER</span> <span class="sql-keyword">BY</span> specialty, pct_deviation <span class="sql-keyword">DESC</span>;</code></pre>
+      <p class="sql-explanation">A ±50% threshold and a minimum of 10 service units are screening choices, not a formal significance test. A flagged provider needs further review of volume and procedure mix.</p>
+    </details><details class="sql-example" >
+      <summary>Telephone-coded share by city<small>Conditional aggregation · explicit denominator · provider counts</small></summary>
+      <div class="code-toolbar"><span>PostgreSQL · 28 lines</span><div class="js-only">
+        <button class="code-button" type="button" data-wrap="pre-city" aria-pressed="false" aria-label="Wrap lines in Telephone-coded share by city">Wrap lines</button>
+        <button class="code-button" type="button" data-copy="code-city" data-name="Telephone-coded share by city" aria-label="Copy Telephone-coded share by city SQL">Copy SQL</button>
+      </div></div>
+      <pre id="pre-city" tabindex="0" aria-label="Telephone-coded share by city SQL, scrollable"><code id="code-city"><span class="sql-keyword">WITH</span> city_services <span class="sql-keyword">AS</span> (
+    <span class="sql-keyword">SELECT</span>
+        <span class="sql-keyword">INITCAP</span>(<span class="sql-keyword">TRIM</span>(p.city)) <span class="sql-keyword">AS</span> city,
+        <span class="sql-keyword">COUNT</span>(<span class="sql-keyword">DISTINCT</span> p.npi) <span class="sql-keyword">AS</span> total_provider_count,
+        <span class="sql-keyword">COUNT</span>(<span class="sql-keyword">DISTINCT</span> p.npi) <span class="sql-keyword">FILTER</span> (
+            <span class="sql-keyword">WHERE</span> u.hcpcs_cd <span class="sql-keyword">IN</span> (<span class="sql-string">&#x27;99441&#x27;</span>, <span class="sql-string">&#x27;99442&#x27;</span>, <span class="sql-string">&#x27;99443&#x27;</span>)
+        ) <span class="sql-keyword">AS</span> telephone_provider_count,
+        <span class="sql-keyword">SUM</span>(u.tot_srvcs) <span class="sql-keyword">AS</span> total_service_units,
+        <span class="sql-keyword">COALESCE</span>(<span class="sql-keyword">SUM</span>(u.tot_srvcs) <span class="sql-keyword">FILTER</span> (
+            <span class="sql-keyword">WHERE</span> u.hcpcs_cd <span class="sql-keyword">IN</span> (<span class="sql-string">&#x27;99441&#x27;</span>, <span class="sql-string">&#x27;99442&#x27;</span>, <span class="sql-string">&#x27;99443&#x27;</span>)
+        ), 0) <span class="sql-keyword">AS</span> telephone_service_units,
+        <span class="sql-keyword">COALESCE</span>(<span class="sql-keyword">SUM</span>(u.avg_medicare_payment * u.tot_srvcs) <span class="sql-keyword">FILTER</span> (
+            <span class="sql-keyword">WHERE</span> u.hcpcs_cd <span class="sql-keyword">IN</span> (<span class="sql-string">&#x27;99441&#x27;</span>, <span class="sql-string">&#x27;99442&#x27;</span>, <span class="sql-string">&#x27;99443&#x27;</span>)
+        ), 0) <span class="sql-keyword">AS</span> telephone_medicare_payment
+    <span class="sql-keyword">FROM</span> utilization u
+    <span class="sql-keyword">JOIN</span> providers p <span class="sql-keyword">ON</span> p.npi = u.npi
+    <span class="sql-keyword">WHERE</span> p.state = <span class="sql-string">&#x27;IL&#x27;</span> <span class="sql-keyword">AND</span> p.provider_type = <span class="sql-string">&#x27;Psychiatry&#x27;</span>
+    <span class="sql-keyword">GROUP</span> <span class="sql-keyword">BY</span> <span class="sql-keyword">INITCAP</span>(<span class="sql-keyword">TRIM</span>(p.city))
+)
+<span class="sql-keyword">SELECT</span>
+    city, total_provider_count, telephone_provider_count,
+    total_service_units, telephone_service_units,
+    <span class="sql-keyword">ROUND</span>(telephone_medicare_payment, 2) <span class="sql-keyword">AS</span> telephone_medicare_payment,
+    <span class="sql-keyword">ROUND</span>(100.0 * telephone_service_units
+        / <span class="sql-keyword">NULLIF</span>(total_service_units, 0), 1) <span class="sql-keyword">AS</span> telephone_service_pct
+<span class="sql-keyword">FROM</span> city_services
+<span class="sql-keyword">WHERE</span> telephone_service_units &gt; 0
+<span class="sql-keyword">ORDER</span> <span class="sql-keyword">BY</span> telephone_service_units <span class="sql-keyword">DESC</span>, city;</code></pre>
+      <p class="sql-explanation">Numerator: 99441–99443 service units. Denominator: all published service units in that provider city. Includes both total providers and telephone-code providers.</p>
+    </details><details class="sql-example" >
+      <summary>Check the source grain<small>Duplicates · service volume · missing or negative payment</small></summary>
+      <div class="code-toolbar"><span>PostgreSQL · 13 lines</span><div class="js-only">
+        <button class="code-button" type="button" data-wrap="pre-quality" aria-pressed="false" aria-label="Wrap lines in Check the source grain">Wrap lines</button>
+        <button class="code-button" type="button" data-copy="code-quality" data-name="Check the source grain" aria-label="Copy Check the source grain SQL">Copy SQL</button>
+      </div></div>
+      <pre id="pre-quality" tabindex="0" aria-label="Check the source grain SQL, scrollable"><code id="code-quality"><span class="sql-keyword">SELECT</span> npi, hcpcs_cd, place_of_service, <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> row_count
+<span class="sql-keyword">FROM</span> utilization
+<span class="sql-keyword">GROUP</span> <span class="sql-keyword">BY</span> npi, hcpcs_cd, place_of_service
+<span class="sql-keyword">HAVING</span> <span class="sql-keyword">COUNT</span>(*) &gt; 1;
+
+<span class="sql-comment">-- Null, non-positive volume, and negative-payment checks.</span>
+<span class="sql-keyword">SELECT</span>
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> published_rows,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">FILTER</span> (<span class="sql-keyword">WHERE</span> tot_srvcs <span class="sql-keyword">IS</span> <span class="sql-keyword">NULL</span> <span class="sql-keyword">OR</span> tot_srvcs &lt;= 0)
+        <span class="sql-keyword">AS</span> invalid_service_rows,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">FILTER</span> (<span class="sql-keyword">WHERE</span> avg_medicare_payment <span class="sql-keyword">IS</span> <span class="sql-keyword">NULL</span>
+        <span class="sql-keyword">OR</span> avg_medicare_payment &lt; 0) <span class="sql-keyword">AS</span> invalid_payment_rows
+<span class="sql-keyword">FROM</span> utilization;</code></pre>
+      <p class="sql-explanation">These checks look for data problems before interpreting results. They do not certify the full dataset or establish clinical validity.</p>
+    </details><p id="code-status" class="code-status" role="status" aria-live="polite"></p></div></div></section>
+
+  
+<div class="case-next"><a href="gridcast.html">← GridCast forecasting</a><a href="graphos.html">GraphOS analytics demo →</a></div>
+</main><footer class="wrap footer"><span>© 2026 Michal Kuderski · Data Analyst</span><a href="../index.html#work">All projects ↑</a></footer></body></html>

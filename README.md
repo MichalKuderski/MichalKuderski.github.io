@@ -7,7 +7,7 @@ A static portfolio led by energy forecasting and Power BI, healthcare spending a
 ## Featured case studies
 
 1. **GridCast energy demand forecasting and Power BI** — `projects/gridcast.html`. Public historical EIA-930 PJM forecasting study, a four-page Power BI Service report, 28 DAX measures, verified filters, and report screenshots. Windows Desktop acceptance remains separate.
-2. **Medicare spending analysis** — SQL/PostgreSQL, weighted metrics, and an Excel reporting workbook. The full case study remains on the home page.
+2. **Medicare spending analysis** — SQL/PostgreSQL, weighted metrics, and an Excel reporting workbook. The full case study is available at `projects/medicare.html` and remains on the home page.
 3. **GraphOS validated retail analytics demo** — `projects/graphos.html`. A completed local scripted workflow on fictional data, with independently reconciled calculations, data-quality evidence, and saved-run history. Production-readiness work remains separate.
 4. **Quantium customer and trial analysis** — `projects/quantium.html`. Reconciled customer-segment sales; original trial-effect and significance claims remain unverified. Public outputs contain aggregate data and code.
 5. **Python reporting automation** — a small sample-data demonstration of repeatable workbook preparation and export.
