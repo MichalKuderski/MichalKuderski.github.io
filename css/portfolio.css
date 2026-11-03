@@ -42,3 +42,6 @@
 @media print{.hero-role{color:var(--ink)}.email-copy,.contact-status{display:none!important}.additional-project,.growth-note{break-inside:avoid}.evidence-map .table-scroll{overflow:visible}.toolkit-table{min-width:0}.sql-example,.sql-example pre{background:white;color:#152823;border-color:#d8e0d9;break-inside:auto}.sql-example pre{max-height:none;overflow:visible}.sql-example code{color:#152823;white-space:pre-wrap;overflow-wrap:anywhere}.sql-example summary{color:#152823}.sql-example summary small,.sql-explanation{color:#52645d}.sql-example .sql-keyword{color:#094d43}.sql-example .sql-comment{color:#52645d}.sql-example .sql-string{color:#59451c}}
 
 .research-note{border-left:3px solid var(--teal);margin-top:28px;padding:3px 0 3px 22px;max-width:90ch}.research-note h3{font-size:20px;margin:9px 0 12px}.research-note p{font-size:14px;color:var(--muted);line-height:1.7}.research-note .eyebrow{font-size:11px;color:var(--teal)}
+
+/* Genuine GridCast report preview in the primary project highlight. */
+.hero-report-preview{display:block;margin-top:20px;border:1px solid #638b7e;border-radius:3px;overflow:hidden;background:#fff}.hero-report-preview img{display:block;width:100%;height:auto}

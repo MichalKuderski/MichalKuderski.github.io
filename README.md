@@ -2,15 +2,18 @@
 
 Live site: https://michalkuderski.github.io/
 
-A static portfolio presenting spending analysis, retail trials, reporting automation, statistical research, classification, and ANOVA simulation. Built with semantic HTML, responsive CSS, and optional JavaScript. No external fonts, analytics trackers, package install, build step, or server runtime is required.
+A static portfolio led by energy forecasting and Power BI, healthcare spending analysis, and validated analytics workflows, with retail analysis, automation, and statistical research as supporting work. Built with semantic HTML, responsive CSS, and optional JavaScript. No external fonts, analytics trackers, package install, build step, or server runtime is required.
 
 ## Featured case studies
 
-1. **Medicare spending analysis** — SQL/PostgreSQL, weighted metrics, and an Excel reporting workbook. The full case study remains on the home page.
-2. **Quantium customer and trial analysis** — `projects/quantium.html`. Reconciled Task 1 customer-segment sales lead the case study. Original Task 2 effects and significance remain unverified. Revised chip-only store comparisons are separately labeled diagnostic reconstructions. Public outputs contain aggregate data and code; customer-level PDFs are not republished.
-3. **Dreaming in Different Cultures** — `projects/dreaming.html`. NIU Honors capstone materials, now classified as research design and a synthetic count-model demonstration. Recovered source imposes group rates and creates mock topics. Four source figures are labeled simulation-associated illustrations; no empirical cultural difference, observed cohort size, or fitted LDA output is claimed as verified.
+1. **GridCast energy demand forecasting and Power BI** — `projects/gridcast.html`. Public historical EIA-930 PJM forecasting study, a four-page Power BI Service report, 28 DAX measures, verified filters, and report screenshots. Windows Desktop acceptance remains separate.
+2. **Medicare spending analysis** — SQL/PostgreSQL, weighted metrics, and an Excel reporting workbook. The full case study remains on the home page.
+3. **GraphOS validated retail analytics demo** — `projects/graphos.html`. A completed local scripted workflow on fictional data, with independently reconciled calculations, data-quality evidence, and saved-run history. Production-readiness work remains separate.
+4. **Quantium customer and trial analysis** — `projects/quantium.html`. Reconciled customer-segment sales; original trial-effect and significance claims remain unverified. Public outputs contain aggregate data and code.
+5. **Python reporting automation** — a small sample-data demonstration of repeatable workbook preparation and export.
+6. **Dreaming in Different Cultures** — `projects/dreaming.html`. NIU Honors research design and a synthetic count-model demonstration; empirical cultural findings remain unverified.
 
-Reporting automation follows the three featured projects; student performance, classification, and experimental-design coursework provide additional depth.
+The project order reflects relevance to data analyst and business intelligence roles. Student performance, classification, and experimental-design coursework provide additional depth.
 
 ### Verify and regenerate the retail snapshot
 
